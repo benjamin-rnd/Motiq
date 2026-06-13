@@ -1,0 +1,25 @@
+# Swift / Xcode
+.build/
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+.swiftpm/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environments
+.env
+.envrc
+.venv
+env/
+
+# OS / Editor
+.DS_Store
+.vscode/
+
+# Other
+*.db
