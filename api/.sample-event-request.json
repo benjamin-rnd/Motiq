@@ -1,0 +1,36 @@
+{
+    "events": [
+        {
+            "event_name": "app_launched",
+            "user_id": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+            "session_id": "F9E8D7C6-B5A4-3210-FEDC-BA9876543210",
+            "timestamp": "2026-06-13T11:30:00UTC",
+            "properties": {
+                "device_model": "iPhone 15",
+                "os_version": "iOS 26.4",
+                "app_version": "1.2.0",
+                "color_scheme": "dark",
+                "orientation": "portait",
+                "connectivity": "wifi",
+                "accessbility_features": ["voiceover", "larger_text"]
+            }
+        },
+        {
+            "event_name": "button_tapped",
+            "user_id": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+            "session_id": "F9E8D7C6-B5A4-3210-FEDC-BA9876543210",
+            "timestamp": "2026-06-13T11:30:07UTC",
+            "properties": {
+                "button_id": "login_button",
+                "screen": "account_settings"
+            }
+        },
+        {
+            "event_name": "app_backgrounded",
+            "user_id": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+            "session_id": "F9E8D7C6-B5A4-3210-FEDC-BA9876543210",
+            "timestamp": "2026-06-13T11:31:00UTC",
+            "properties": {}
+        }
+    ]
+}
