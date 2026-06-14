@@ -10,9 +10,9 @@
                 "os_version": "iOS 26.4",
                 "app_version": "1.2.0",
                 "color_scheme": "dark",
-                "orientation": "portait",
+                "orientation": "portrait",
                 "connectivity": "wifi",
-                "accessbility_features": ["voiceover", "larger_text"]
+                "accessibility_features": ["voiceover", "larger_text"]
             }
         },
         {
