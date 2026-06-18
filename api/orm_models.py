@@ -14,5 +14,5 @@ class Event(Base):
     properties: Mapped[str] = mapped_column(default="{}")
 
     __table_args__ = (
-        Index("ix-event_name-user_id", "event_name", "user_id")
+        Index("ix-event_name-user_id", "event_name", "user_id"),
     )
