@@ -5,7 +5,7 @@ class Event(BaseModel):
     event_name: str
     user_id: str
     session_id: str
-    app_id: str
+    app_id: str | None = None
     timestamp: str
     properties: dict[str, Any] = {}
 
