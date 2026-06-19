@@ -26,6 +26,9 @@ def get_device_breakdown(db: Session = Depends(get_db), key: str = Depends(verif
     number_of_devices = crud.get_absolute_number_of_devices(db)
     percentage_of_devices = crud.get_percentage_of_devices(db)
 
+    if number_of_devices == {}:
+        return "No devices found"
+
     return {"number_of_devices": number_of_devices,
             "percentage_of_devices": percentage_of_devices}
 
@@ -33,3 +36,4 @@ def get_device_breakdown(db: Session = Depends(get_db), key: str = Depends(verif
 @app.post("/events/batch", status_code=status.HTTP_200_OK)
 def add_event_batch(batch: EventBatch, db: Session = Depends(get_db), key: str = Depends(verify_api_key)):
     crud.create_event(db, batch)
+    return "event batch received"
