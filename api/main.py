@@ -1,11 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
-from api.database import engine, get_db, Base
+from api.database import Base, engine, get_db
 from api.auth import verify_api_key
 from api.pydantic_schemas import EventBatch
+from api.orm_models import Event
 import api.crud as crud
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    Base.metadata.create_all(bind = engine)
+    yield
+    # shutdown
+
+app = FastAPI(lifespan=lifespan)
 
 # MARK: GET
 @app.get("/")
