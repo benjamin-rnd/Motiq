@@ -3,11 +3,11 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
+from pathlib import Path
 from api.database import get_db
 from api.main import app
 
-MOCK_DB = "tests/resources/mock.db"
+MOCK_DB = Path(__file__).parent / "tests" / "resources" / "mock.db"
 
 @pytest.fixture(scope="function")
 def db(tmp_path):
