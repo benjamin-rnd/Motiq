@@ -67,6 +67,6 @@ def get_percentage_of_devices(db: Session) -> dict[str, float]:
 
     for device_model, count in rows:
         percentage = (count / total_devices) * 100
-        percentages[device_model] = round(percentage, 2)
+        percentages[device_model] = round(percentage, 1)
 
     return percentages
