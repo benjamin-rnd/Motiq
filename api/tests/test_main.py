@@ -4,6 +4,7 @@ import json
 from fastapi.testclient import TestClient
 from dotenv import load_dotenv
 
+load_dotenv()
 key = os.getenv("API_KEY") or ""
 
 def test_get_root(client: TestClient):
