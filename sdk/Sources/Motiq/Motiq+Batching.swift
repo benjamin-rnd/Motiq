@@ -5,8 +5,6 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
-// get queue from Motiq+Queue.swift, put batch together and pass to Motiq+API.swift
-
 extension Motiq {
     
     func buildBatch() async {
@@ -18,7 +16,7 @@ extension Motiq {
         flushTask?.cancel()
         
         print(batch)
-        // send batch to Motiq+API.swift
+        // TODO: send batch to Motiq+API.swift
     }
     
 }
