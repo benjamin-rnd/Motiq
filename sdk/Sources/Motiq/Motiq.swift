@@ -8,7 +8,12 @@
 import Foundation
 
 actor Motiq {
-    static let shared = Motiq()
+    public static let shared = Motiq()
+    
+    var queue: [Event] = []
+    var isFlushTimerRunning: Bool = false
+    var flushTask: Task<Void, Never>?
+    
     var apiEndpoint: URL?
     var apiKey: String = ""
     var trackingMode: TrackingMode = .singleApp
