@@ -1,0 +1,8 @@
+//
+//  Motiq+Batching.swift
+//  Motiq
+//
+//  Created by Benjamin Arndt on 21.06.26.
+//
+
+// batch logic
