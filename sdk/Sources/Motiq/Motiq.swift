@@ -26,17 +26,19 @@ actor Motiq {
 
     private init() {}
 
-    public func configure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int = 10, flushIntervalSeconds: Int = 45, debugMode: Bool = false) async {
-        self.apiEndpoint = URL(string: apiEndpoint)
-        self.apiKey = apiKey
-        self.trackingMode = trackingMode
-        self.batchSize = batchSize
-        self.flushIntervalSeconds = flushIntervalSeconds
-        self.debugMode = debugMode
-        
-        sessionID = generateNewSessionID()
-        await trackAppLaunch()
-        setupAppLifecycleObservers()
+    public func configure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int = 10, flushIntervalSeconds: Int = 45, debugMode: Bool = false) {
+        Task {
+            self.apiEndpoint = URL(string: apiEndpoint)
+            self.apiKey = apiKey
+            self.trackingMode = trackingMode
+            self.batchSize = batchSize
+            self.flushIntervalSeconds = flushIntervalSeconds
+            self.debugMode = debugMode
+            
+            sessionID = generateNewSessionID()
+            await trackAppLaunch()
+            setupAppLifecycleObservers()
+        }
     }
 
     enum TrackingMode {
