@@ -13,7 +13,9 @@ import UIKit
 extension Motiq {
     
     func getIDFV() async -> String {
-        return await UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
+        await UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
+    }
+    
     func getDevice() -> String {
         if debugMode && Device.current.isSimulator {
             print("Simulator detected: \(Device.current.safeDescription)")
@@ -26,20 +28,19 @@ extension Motiq {
     }
     
     func getAppVersion() -> String {
-        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     }
     
-    func getOSVersion() -> String {
-        let osVersion = ProcessInfo.processInfo.operatingSystemVersion
-        return "\(osVersion.majorVersion).\(osVersion.minorVersion).\(osVersion.patchVersion)"
+    func getOSVersion() async -> String {
+        await UIDevice.current.systemVersion
     }
     
     func getColorScheme() -> String {
-        return UITraitCollection.current.userInterfaceStyle == .dark ? "dark" : "light"
+        UITraitCollection.current.userInterfaceStyle == .dark ? "dark" : "light"
     }
     
     func getOrientation() async -> String {
-        return await MainActor.run {
+        await MainActor.run {
             UIDevice.current.orientation.isLandscape ? "landscape" : "portrait"
         }
     }
