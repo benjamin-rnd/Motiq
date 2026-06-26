@@ -37,4 +37,22 @@ extension Motiq {
         return Date().ISO8601Format()
     }
     
+    func trackAppLaunch() async {
+        let properties: [String: Any] = await [
+            "device_model": getDevice(),
+            "os_version": getOSVersion(),
+            "app_version": getAppVersion(),
+            "color_scheme": getColorScheme(),
+            "orientation": getOrientation(),
+            "connectivity": getConnectivity(),
+            "accessibility_features": getEnabledAccessibilityFeatures()
+        ]
+        
+        await track(event_name: "app_launch", properties: properties)
+    }
+    
+    func trackAppClose() async {
+        await track(event_name: "app_close")
+    }
+    
 }
