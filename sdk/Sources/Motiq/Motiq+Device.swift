@@ -5,6 +5,7 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
+import DeviceKit
 import Foundation
 import Network
 import UIKit
@@ -13,6 +14,15 @@ extension Motiq {
     
     func getIDFV() async -> String {
         return await UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
+    func getDevice() -> String {
+        if debugMode && Device.current.isSimulator {
+            print("Simulator detected: \(Device.current.safeDescription)")
+        }
+        
+        if case .unknown = Device.current {
+            return "Unknown"
+        }
+        return Device.current.safeDescription
     }
     
     func getAppVersion() -> String {
