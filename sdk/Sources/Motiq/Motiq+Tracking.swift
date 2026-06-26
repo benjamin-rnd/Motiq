@@ -24,7 +24,7 @@ extension Motiq {
         let event = await Event(
             name: event_name,
             user_id: getIDFV(),
-            session_id: getCurrentSessionID(),
+            session_id: sessionID,
             app_id: app_id,
             timestamp: getCurrentTime(),
             properties: codableProperties
