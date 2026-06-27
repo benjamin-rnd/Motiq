@@ -15,8 +15,7 @@ extension Motiq {
         isFlushTimerRunning = false
         flushTask?.cancel()
         
-        print(batch)
-        // TODO: send batch to Motiq+API.swift
+        encodeBatchToJSON(batch)
     }
     
 }

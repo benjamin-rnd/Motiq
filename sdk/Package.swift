@@ -16,10 +16,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(
-                url: "https://github.com/Flight-School/AnyCodable",
-                from: "0.6.0"
-            ),
+        .package(url: "https://github.com/Flight-School/AnyCodable",from: "0.6.0"),
+        .package(url: "https://github.com/devicekit/DeviceKit.git", from: "5.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -27,7 +25,8 @@ let package = Package(
         .target(
             name: "Motiq",
             dependencies: [
-                .product(name: "AnyCodable", package: "AnyCodable")
+                .product(name: "AnyCodable", package: "AnyCodable"),
+                .product(name: "DeviceKit", package: "DeviceKit")
             ]
         ),
         .testTarget(
