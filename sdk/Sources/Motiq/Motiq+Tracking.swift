@@ -11,6 +11,11 @@ import Foundation
 extension Motiq {
     
     public func track(event_name: String, properties: [String: Any] = [:]) async {
+        guard isEnabled else {
+            print("Motiq is disabled, skipping tracking")
+            return
+        }
+        
         var app_id: String?
         
         if case .crossApp(let appId) = trackingMode {

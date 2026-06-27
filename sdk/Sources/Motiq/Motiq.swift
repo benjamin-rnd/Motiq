@@ -11,6 +11,8 @@ actor Motiq {
     
     public static let shared = Motiq()
     
+    public var isEnabled: Bool = true
+    
     var queue: [Event] = []
     var isFlushTimerRunning: Bool = false
     var flushTask: Task<Void, Never>?
