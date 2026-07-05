@@ -7,7 +7,7 @@
 
 import Foundation
 
-actor Motiq {
+public actor Motiq {
     
     public static let shared = Motiq()
     
@@ -43,7 +43,7 @@ actor Motiq {
         }
     }
 
-    enum TrackingMode {
+    public enum TrackingMode {
         case singleApp
         case crossApp(appId: String)
     }
