@@ -33,7 +33,7 @@ public actor Motiq {
 
     private init() {}
 
-    public func configure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) {
+    public nonisolated func configure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) {
         Task {
             await internalConfigure(apiEndpoint: apiEndpoint, apiKey: apiKey, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
         }
@@ -55,7 +55,7 @@ public actor Motiq {
         setupAppLifecycleObservers()
     }
 
-    public enum TrackingMode {
+    public enum TrackingMode: Sendable {
         case singleApp
         case crossApp(appId: String)
     }

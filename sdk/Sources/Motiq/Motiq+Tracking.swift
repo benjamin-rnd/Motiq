@@ -10,7 +10,13 @@ import Foundation
 
 extension Motiq {
     
-    public func track(event_name: String, properties: [String: Any] = [:]) {
+    public nonisolated func track(event_name: String, properties: [String: any Sendable] = [:]) {
+        Task {
+            await internalTrack(event_name: event_name, properties: properties)
+        }
+    }
+    
+    func internalTrack(event_name: String, properties: [String: Any] = [:]) async {
         guard isEnabled else {
             print("Motiq is disabled, skipping tracking")
             return
@@ -43,9 +49,9 @@ extension Motiq {
     }
     
     func trackAppLaunch() {
-        let properties: [String: Any] = [
+        let properties: [String: any Sendable] = [
             "device_model": getDevice(),
-            "os_version": cachedIDFV,
+            "os_version": cachedOSVersion,
             "app_version": getAppVersion(),
             "color_scheme": getColorScheme(),
             "orientation": cachedOrientation,
