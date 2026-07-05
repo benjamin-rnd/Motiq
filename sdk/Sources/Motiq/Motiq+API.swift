@@ -30,7 +30,7 @@ extension Motiq {
             return
         }
         
-        // send batch to API
+        // TODO: send batch to API --> will be added later
     }
     
 }
