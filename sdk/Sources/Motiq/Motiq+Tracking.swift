@@ -10,7 +10,7 @@ import Foundation
 
 extension Motiq {
     
-    public func track(event_name: String, properties: [String: Any] = [:]) async {
+    public func track(event_name: String, properties: [String: Any] = [:]) {
         guard isEnabled else {
             print("Motiq is disabled, skipping tracking")
             return
@@ -26,38 +26,38 @@ extension Motiq {
         
         let codableProperties = properties.mapValues { AnyCodable($0) }
         
-        let event = await Event(
+        let event = Event(
             name: event_name,
-            user_id: getIDFV(),
+            user_id: cachedIDFV,
             session_id: sessionID,
             app_id: app_id,
             timestamp: getCurrentTime(),
             properties: codableProperties
         )
         
-        await storeEventInQueue(event)
+        storeEventInQueue(event)
     }
     
     private func getCurrentTime() -> String {
         return Date().ISO8601Format()
     }
     
-    func trackAppLaunch() async {
-        let properties: [String: Any] = await [
+    func trackAppLaunch() {
+        let properties: [String: Any] = [
             "device_model": getDevice(),
-            "os_version": getOSVersion(),
+            "os_version": cachedIDFV,
             "app_version": getAppVersion(),
             "color_scheme": getColorScheme(),
-            "orientation": getOrientation(),
+            "orientation": cachedOrientation,
             "connectivity": getConnectivity(),
-            "accessibility_features": getEnabledAccessibilityFeatures()
+            "accessibility_features": cachedEnabledAccessibilityFeatures
         ]
         
-        await track(event_name: "app_launch", properties: properties)
+        track(event_name: "app_launch", properties: properties)
     }
     
-    func trackAppClose() async {
-        await track(event_name: "app_close")
+    func trackAppClose() {
+        track(event_name: "app_close")
     }
     
 }
