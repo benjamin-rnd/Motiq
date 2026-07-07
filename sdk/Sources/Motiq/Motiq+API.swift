@@ -20,7 +20,37 @@ extension Motiq {
             return
         }
         
-        // TODO: send batch to API --> will be added later
+        guard let apiEndpoint = baseURL?.appending(path: "/events/batch") else {
+            print("Batch not sent due to error while accessing correct API endpoint.")
+            return
+        }
+
+        var request = URLRequest(url: apiEndpoint)
+        request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = payload
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error {
+                print("Error while sending batch to API: \(error)")
+                return
+            }
+            
+            /*guard let data else { return }
+            
+            if let json = try? JSONSerialization.jsonObject(with: data) {
+                print("Response:", json)
+            }*/
+            
+            guard let httpResponse = response as? HTTPURLResponse else { return }
+            
+            if httpResponse.statusCode != 201 {
+                print("Unexpected status code: \(httpResponse.statusCode)")
+            }
+        }
+
+        task.resume()
     }
     
     private func encodeBatchToJSON(_ batch: EventBatch) -> Data? {
