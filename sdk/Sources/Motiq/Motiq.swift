@@ -24,7 +24,7 @@ public actor Motiq {
     var cachedOrientation: String = ""
     var cachedEnabledAccessibilityFeatures: [String] = []
     
-    var apiEndpoint: URL?
+    var baseURL: URL?
     var apiKey: String = ""
     var trackingMode: TrackingMode = .singleApp
     var batchSize: Int = 10
@@ -33,14 +33,14 @@ public actor Motiq {
 
     private init() {}
 
-    public nonisolated func configure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) {
+    public nonisolated func configure(baseURL: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) {
         Task {
-            await internalConfigure(apiEndpoint: apiEndpoint, apiKey: apiKey, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
+            await internalConfigure(baseURL: baseURL, apiKey: apiKey, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
         }
     }
     
-    func internalConfigure(apiEndpoint: String, apiKey: String, trackingMode: TrackingMode, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) async {
-        self.apiEndpoint = URL(string: apiEndpoint)
+    func internalConfigure(baseURL: String, apiKey: String, trackingMode: TrackingMode, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) async {
+        self.baseURL = baseURL.hasSuffix("/") ? URL(string: String(baseURL.dropLast())) : URL(string: baseURL)
         self.apiKey = apiKey
         self.trackingMode = trackingMode
         self.batchSize = batchSize
