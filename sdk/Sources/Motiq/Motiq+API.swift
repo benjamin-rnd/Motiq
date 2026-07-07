@@ -9,26 +9,28 @@ import Foundation
 
 extension Motiq {
     
-    func encodeBatchToJSON(_ batch: EventBatch) {
-        do {
-            let payload = try JSONEncoder().encode(batch)
-            sendBatch(payload)
-        } catch {
-            print("Batch not sent due to encoding error: \(error)")
+    func sendBatchToAPI(_ batch: EventBatch) {
+        guard debugMode == false else {
+            print("Debug mode enabled, batch not sent to API. Batch payload:")
+            print(batch)
+            return
         }
         
-    }
-    
-    private func sendBatch(_ payload: Data) {
-        guard debugMode == false else {
-            if let jsonString = String(data: payload, encoding: .utf8) {
-                print("Debug mode enabled, batch not sent to API. Batch payload:")
-                print(jsonString)
-            }
+        guard let payload = encodeBatchToJSON(batch) else {
             return
         }
         
         // TODO: send batch to API --> will be added later
+    }
+    
+    private func encodeBatchToJSON(_ batch: EventBatch) -> Data? {
+        do {
+            let payload = try JSONEncoder().encode(batch)
+            return payload
+        } catch {
+            print("Batch not sent due to encoding error: \(error)")
+            return nil
+        }
     }
     
 }
