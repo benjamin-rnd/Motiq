@@ -14,10 +14,9 @@ public actor Motiq {
     public var isEnabled: Bool = true
     
     var queue: [Event] = []
+    var sessionID: String = ""
     var isFlushTimerRunning: Bool = false
     var flushTask: Task<Void, Never>?
-    
-    var sessionID: String = ""
     
     var cachedIDFV: String = ""
     var cachedOSVersion: String = ""
