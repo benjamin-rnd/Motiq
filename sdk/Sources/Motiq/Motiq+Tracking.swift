@@ -10,7 +10,18 @@ import Foundation
 
 extension Motiq {
     
-    public func track(event_name: String, properties: [String: Any] = [:]) async {
+    public nonisolated func track(event_name: String, properties: [String: any Sendable] = [:]) {
+        Task {
+            await internalTrack(event_name: event_name, properties: properties)
+        }
+    }
+    
+    func internalTrack(event_name: String, properties: [String: Any] = [:]) async {
+        guard isEnabled else {
+            print("Motiq is disabled, skipping tracking")
+            return
+        }
+        
         var app_id: String?
         
         if case .crossApp(let appId) = trackingMode {
@@ -21,38 +32,38 @@ extension Motiq {
         
         let codableProperties = properties.mapValues { AnyCodable($0) }
         
-        let event = await Event(
+        let event = Event(
             name: event_name,
-            user_id: getIDFV(),
+            user_id: cachedIDFV,
             session_id: sessionID,
             app_id: app_id,
             timestamp: getCurrentTime(),
             properties: codableProperties
         )
         
-        await storeEventInQueue(event)
+        storeEventInQueue(event)
     }
     
     private func getCurrentTime() -> String {
         return Date().ISO8601Format()
     }
     
-    func trackAppLaunch() async {
-        let properties: [String: Any] = await [
+    func trackAppLaunch() {
+        let properties: [String: any Sendable] = [
             "device_model": getDevice(),
-            "os_version": getOSVersion(),
+            "os_version": cachedOSVersion,
             "app_version": getAppVersion(),
             "color_scheme": getColorScheme(),
-            "orientation": getOrientation(),
+            "orientation": cachedOrientation,
             "connectivity": getConnectivity(),
-            "accessibility_features": getEnabledAccessibilityFeatures()
+            "accessibility_features": cachedEnabledAccessibilityFeatures
         ]
         
-        await track(event_name: "app_launch", properties: properties)
+        track(event_name: "app_launched", properties: properties)
     }
     
-    func trackAppClose() async {
-        await track(event_name: "app_close")
+    func trackAppClose() {
+        track(event_name: "app_closed")
     }
     
 }

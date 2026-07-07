@@ -7,7 +7,7 @@
 
 extension Motiq {
     
-    func storeEventInQueue(_ event: Event) async {
+    func storeEventInQueue(_ event: Event) {
         queue.append(event)
         
         if !isFlushTimerRunning {
@@ -15,7 +15,7 @@ extension Motiq {
         }
         
         if isQueueAtBatchSize() {
-            await buildBatch()
+            buildBatch()
         }
     }
     
@@ -32,7 +32,7 @@ extension Motiq {
         
         flushTask = Task {
             try? await Task.sleep(for: .seconds(flushIntervalSeconds))
-            await buildBatch()
+            buildBatch()
         }
     }
     

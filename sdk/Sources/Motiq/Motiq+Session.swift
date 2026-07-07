@@ -14,13 +14,13 @@ extension Motiq {
         UUID().uuidString
     }
     
-    func handleAppBackground() async {
-        await trackAppClose()
+    func handleAppBackground() {
+        trackAppClose()
     }
     
-    func handleAppLaunchFromBackground() async {
+    func handleAppLaunchFromBackground() {
         sessionID = generateNewSessionID()
-        await trackAppLaunch()
+        trackAppLaunch()
     }
     
     func handleAppTerminate() {

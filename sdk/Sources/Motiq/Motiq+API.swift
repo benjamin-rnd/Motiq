@@ -5,32 +5,56 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
-// get queue from Motiq+Queue.swift, encode it to JSON and pass to API (POST request)
-
 import Foundation
 
 extension Motiq {
     
-    func encodeBatchToJSON(_ batch: EventBatch) {
-        do {
-            let payload = try JSONEncoder().encode(batch)
-            sendBatch(payload)
-        } catch {
-            print("Batch not sent due to encoding error: \(error)")
-        }
-        
-    }
-    
-    private func sendBatch(_ payload: Data) {
+    func sendBatchToAPI(_ batch: EventBatch) {
         guard debugMode == false else {
-            if let jsonString = String(data: payload, encoding: .utf8) {
-                print("Debug mode enabled, batch not sent to API. Batch payload:")
-                print(jsonString)
-            }
+            print("Debug mode enabled, batch not sent to API. Batch payload:")
+            dump(batch)
             return
         }
         
-        // send batch to API
+        guard let payload = encodeBatchToJSON(batch) else {
+            return
+        }
+        
+        guard let apiEndpoint = baseURL?.appending(path: "/events/batch") else {
+            print("Batch not sent due to error while accessing correct API endpoint.")
+            return
+        }
+
+        var request = URLRequest(url: apiEndpoint)
+        request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = payload
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error {
+                print("Error while sending batch to API: \(error)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else { return }
+            
+            if httpResponse.statusCode != 201 {
+                print("Unexpected status code: \(httpResponse.statusCode)")
+            }
+        }
+
+        task.resume()
+    }
+    
+    private func encodeBatchToJSON(_ batch: EventBatch) -> Data? {
+        do {
+            let payload = try JSONEncoder().encode(batch)
+            return payload
+        } catch {
+            print("Batch not sent due to encoding error: \(error)")
+            return nil
+        }
     }
     
 }

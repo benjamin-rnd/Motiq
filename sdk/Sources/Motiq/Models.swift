@@ -14,6 +14,15 @@ struct Event: Codable {
     let app_id: String?
     let timestamp: String
     let properties: [String: AnyCodable]
+    
+    enum CodingKeys: String, CodingKey {
+        case name = "event_name"
+        case user_id
+        case session_id
+        case app_id
+        case timestamp
+        case properties
+    }
 }
 
 struct EventBatch: Codable {
