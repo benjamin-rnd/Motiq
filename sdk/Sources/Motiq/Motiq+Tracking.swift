@@ -59,11 +59,11 @@ extension Motiq {
             "accessibility_features": cachedEnabledAccessibilityFeatures
         ]
         
-        track(event_name: "app_launch", properties: properties)
+        track(event_name: "app_launched", properties: properties)
     }
     
     func trackAppClose() {
-        track(event_name: "app_close")
+        track(event_name: "app_closed")
     }
     
 }
