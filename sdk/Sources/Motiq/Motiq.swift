@@ -50,6 +50,7 @@ public actor Motiq {
         sessionID = generateNewSessionID()
         self.cachedIDFV = await getIDFV()
         self.cachedOSVersion = await getOSVersion()
+        self.cachedOrientation = await getOrientation()
         self.cachedEnabledAccessibilityFeatures = await getEnabledAccessibilityFeatures()
         trackAppLaunch()
         setupAppLifecycleObservers()
