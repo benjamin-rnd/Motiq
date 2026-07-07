@@ -12,7 +12,7 @@ extension Motiq {
     func sendBatchToAPI(_ batch: EventBatch) {
         guard debugMode == false else {
             print("Debug mode enabled, batch not sent to API. Batch payload:")
-            print(batch)
+            dump(batch)
             return
         }
         
