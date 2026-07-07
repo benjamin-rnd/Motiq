@@ -37,12 +37,6 @@ extension Motiq {
                 return
             }
             
-            /*guard let data else { return }
-            
-            if let json = try? JSONSerialization.jsonObject(with: data) {
-                print("Response:", json)
-            }*/
-            
             guard let httpResponse = response as? HTTPURLResponse else { return }
             
             if httpResponse.statusCode != 201 {
