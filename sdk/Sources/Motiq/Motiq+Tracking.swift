@@ -10,7 +10,24 @@ import Foundation
 
 extension Motiq {
     
-    public nonisolated func track(event_name: String, properties: [String: any Sendable] = [:]) {
+    /// Tracks a named event with optional custom properties.
+    ///
+    /// Events are queued and flushed to your Motiq backend automatically,
+    /// either when the batch size is reached or the flush interval expires.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the event (e.g. `"button_tapped"`, `"purchase_completed"`).
+    ///     I recommend to use past-tense naming for consistency.
+    ///   - properties: An optional dictionary of additional metadata to attach to the event.
+    ///     Defaults to `[:]`.
+    ///
+    /// - Note: Has no effect if ``isEnabled`` is set to `false`.
+    ///
+    /// ## Example
+    /// ```swift
+    /// Motiq.shared.track("button_tapped", properties: ["screen": "home", "variant": "A"])
+    /// ```
+    ///
     public nonisolated func track(_ name: String, properties: [String: any Sendable] = [:]) {
         Task {
             await internalTrack(name: name, properties: properties)
