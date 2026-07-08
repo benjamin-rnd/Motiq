@@ -31,8 +31,6 @@ public actor Motiq {
     var debugMode: Bool = true
 
     private init() {}
-
-    public nonisolated func configure(baseURL: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) {
         Task {
             await internalConfigure(baseURL: baseURL, apiKey: apiKey, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
         }
