@@ -11,12 +11,13 @@ import Foundation
 extension Motiq {
     
     public nonisolated func track(event_name: String, properties: [String: any Sendable] = [:]) {
+    public nonisolated func track(_ name: String, properties: [String: any Sendable] = [:]) {
         Task {
-            await internalTrack(event_name: event_name, properties: properties)
+            await internalTrack(name: name, properties: properties)
         }
     }
     
-    func internalTrack(event_name: String, properties: [String: Any] = [:]) async {
+    func internalTrack(name: String, properties: [String: Any] = [:]) async {
         guard isEnabled else {
             print("Motiq is disabled, skipping tracking")
             return
@@ -33,7 +34,7 @@ extension Motiq {
         let codableProperties = properties.mapValues { AnyCodable($0) }
         
         let event = Event(
-            name: event_name,
+            name: name,
             user_id: cachedIDFV,
             session_id: sessionID,
             app_id: app_id,
@@ -59,11 +60,11 @@ extension Motiq {
             "accessibility_features": cachedEnabledAccessibilityFeatures
         ]
         
-        track(event_name: "app_launched", properties: properties)
+        track("app_launched", properties: properties)
     }
     
     func trackAppClose() {
-        track(event_name: "app_closed")
+        track("app_closed")
     }
     
 }
