@@ -51,10 +51,10 @@ public actor Motiq {
     /// ## Example
     /// ```swift
     /// // Disable tracking
-    /// await Motiq.shared.setEnabled(false)
+    /// Motiq.shared.setEnabled(false)
     ///
     /// // Re-enable later
-    /// await Motiq.shared.setEnabled(true)
+    /// Motiq.shared.setEnabled(true)
     /// ```
     public func setEnabled(_ enabled: Bool) {
         isEnabled = enabled
