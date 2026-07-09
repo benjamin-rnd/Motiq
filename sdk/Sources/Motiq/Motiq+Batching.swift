@@ -7,15 +7,13 @@
 
 extension Motiq {
     
-    func buildBatch() {
-        guard !queue.isEmpty else { return }
+    func buildBatch() -> EventBatch {
         let batch = EventBatch(events: queue)
-        clearQueue()
         
         isFlushTimerRunning = false
         flushTask?.cancel()
         
-        sendBatchToAPI(batch)
+        return batch
     }
     
 }

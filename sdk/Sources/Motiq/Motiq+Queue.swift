@@ -15,7 +15,7 @@ extension Motiq {
         }
         
         if isQueueAtBatchSize() {
-            buildBatch()
+            flushQueue()
         }
     }
     
@@ -32,8 +32,19 @@ extension Motiq {
         
         flushTask = Task {
             try? await Task.sleep(for: .seconds(flushIntervalSeconds))
-            buildBatch()
+            flushQueue()
         }
+    }
+    
+    private func flushQueue() {
+        guard !queue.isEmpty else { return }
+        let batch = buildBatch()
+        
+        isFlushTimerRunning = false
+        flushTask?.cancel()
+        
+        sendBatchToAPI(batch)
+        clearQueue()
     }
     
 }
