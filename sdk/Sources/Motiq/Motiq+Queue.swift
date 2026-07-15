@@ -5,6 +5,8 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
+import Network
+
 extension Motiq {
     
     func storeEventInQueue(_ event: Event) {
@@ -45,6 +47,10 @@ extension Motiq {
         
         sendBatchToAPI(batch)
         clearQueue()
+    
+    private func isNetworkAvailable() -> Bool {
+        let monitor = NWPathMonitor()
+        return monitor.currentPath.status == .satisfied
     }
     
 }

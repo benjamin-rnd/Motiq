@@ -9,7 +9,7 @@ import Foundation
 
 extension Motiq {
     
-    private func persistQueue(_ events: [Event]) {
+    private func writeQueueToStorage(_ events: [Event]) {
         let url = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("motiq_queue.json")
@@ -22,7 +22,7 @@ extension Motiq {
         }
     }
     
-    private func loadPersistedQueue() -> [Event] {
+    func loadPersistedQueue() -> [Event] {
         let url = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("motiq_queue.json")
@@ -36,11 +36,21 @@ extension Motiq {
         }
     }
     
-    func mergeWithPersistedQueue() {
+    func persistQueue() {
         var queueToPersist = loadPersistedQueue()
         queueToPersist.append(contentsOf: queue)
         
-        persistQueue(queueToPersist)
+        writeQueueToStorage(queueToPersist)
+    }
+    
+    func isPersistedQueueEmpty() -> Bool {
+        loadPersistedQueue().isEmpty
+    }
+    
+    func clearPersistedQueue() {
+        try? FileManager.default.removeItem(at: FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("motiq_queue.json"))
     }
     
 }
