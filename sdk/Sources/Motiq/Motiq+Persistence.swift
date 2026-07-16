@@ -29,8 +29,7 @@ extension Motiq {
     }
     
     func loadPersistedQueue() -> [Event] {
-        // check if file motiq_queue.json exists
-        // otherwise a error is thrown
+        // check if file motiq_queue.json exists, otherwise an error is thrown
         let url = getQueueFileURL()
         
         guard FileManager.default.fileExists(atPath: url.path) else {
