@@ -23,11 +23,6 @@ extension Motiq {
         trackAppLaunch()
     }
     
-    func handleAppTerminate() {
-        print("App terminated")
-        // TODO: Add offline queueing here --> will be added later
-    }
-    
     func setupAppLifecycleObservers() {
         NotificationCenter.default.addObserver(
             forName: UIApplication.didEnterBackgroundNotification,
@@ -43,14 +38,6 @@ extension Motiq {
             queue: .main
         ) { [weak self] _ in
             Task { await self?.handleAppLaunchFromBackground() }
-        }
-        
-        NotificationCenter.default.addObserver(
-            forName: UIApplication.willTerminateNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            Task { await self?.handleAppTerminate() }
         }
     }
     
