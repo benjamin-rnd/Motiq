@@ -9,23 +9,33 @@ import Foundation
 
 extension Motiq {
     
-    private func writeQueueToStorage(_ events: [Event]) {
-        let url = FileManager.default
+    private func getQueueFileURL() -> URL {
+        let directory = FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("motiq_queue.json")
         
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        
+        return directory.appendingPathComponent("motiq_queue.json")
+    }
+    
+    private func writeQueueToStorage(_ events: [Event]) {
         do {
             let data = try JSONEncoder().encode(events)
-            try data.write(to: url, options: .atomic)
+            try data.write(to: getQueueFileURL(), options: .atomic)
         } catch {
             print("Error persisting queue: \(error)")
         }
     }
     
     func loadPersistedQueue() -> [Event] {
-        let url = FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("motiq_queue.json")
+        // check if file motiq_queue.json exists
+        // otherwise a error is thrown
+        let url = getQueueFileURL()
+        
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            return []
+        }
         
         do {
             let data = try Data(contentsOf: url)
@@ -48,9 +58,7 @@ extension Motiq {
     }
     
     func clearPersistedQueue() {
-        try? FileManager.default.removeItem(at: FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("motiq_queue.json"))
+        try? FileManager.default.removeItem(at: getQueueFileURL())
     }
     
 }
