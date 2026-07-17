@@ -117,8 +117,11 @@ public actor Motiq {
         self.cachedOSVersion = await getOSVersion()
         self.cachedOrientation = await getOrientation()
         self.cachedEnabledAccessibilityFeatures = await getEnabledAccessibilityFeatures()
+        
         trackAppLaunch()
         setupAppLifecycleObservers()
+        
+        flushPersistedQueue()
     }
     
     /// Controls whether events are attributed to a single app or across multiple apps

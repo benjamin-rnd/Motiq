@@ -16,6 +16,7 @@ extension Motiq {
     
     func handleAppBackground() {
         trackAppClose()
+        flushQueue()
     }
     
     func handleAppLaunchFromBackground() {
