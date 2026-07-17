@@ -5,8 +5,6 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
-import Network
-
 extension Motiq {
     
     func storeEventInQueue(_ event: Event) {
@@ -38,19 +36,41 @@ extension Motiq {
         }
     }
     
-    private func flushQueue() {
+    func flushQueue() {
         guard !queue.isEmpty else { return }
         let batch = buildBatch()
         
         isFlushTimerRunning = false
         flushTask?.cancel()
         
-        sendBatchToAPI(batch)
-        clearQueue()
+        Task {
+            do {
+                try await sendBatchToAPI(batch)
+                clearQueue()
+                flushPersistedQueue()
+            } catch let error as MotiqSendError {
+                switch error {
+                case .networkUnavailable:
+                    print("Batch send failed with network error, will persist batch")
+                    persistQueue()
+                    clearQueue()
+                case .serverError(let statusCode):
+                    print("Batch send failed due to server error with status code: \(statusCode)")
+                    persistQueue()
+                    clearQueue()
+                case .clientError(let statusCode):
+                    print("Batch send failed due to client error with status code: \(statusCode)")
+                    clearQueue()
+                }
+            }
+        }
+    }
     
-    private func isNetworkAvailable() -> Bool {
-        let monitor = NWPathMonitor()
-        return monitor.currentPath.status == .satisfied
+    func flushPersistedQueue() {
+        guard !isPersistedQueueEmpty() else { return }
+        queue.append(contentsOf: loadPersistedQueue())
+        clearPersistedQueue()
+        flushQueue()
     }
     
 }

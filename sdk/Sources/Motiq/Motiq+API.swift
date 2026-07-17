@@ -9,7 +9,7 @@ import Foundation
 
 extension Motiq {
     
-    func sendBatchToAPI(_ batch: EventBatch) {
+    func sendBatchToAPI(_ batch: EventBatch) async throws {
         guard debugMode == false else {
             print("Debug mode enabled, batch not sent to API. Batch payload:")
             dump(batch)
@@ -31,20 +31,24 @@ extension Motiq {
         request.httpMethod = "POST"
         request.httpBody = payload
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error {
-                print("Error while sending batch to API: \(error)")
-                return
-            }
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else { return }
             
-            if httpResponse.statusCode != 201 {
-                print("Unexpected status code: \(httpResponse.statusCode)")
+            switch httpResponse.statusCode {
+            case 201:
+                break
+            case 400...499:
+                throw MotiqSendError.clientError(httpResponse.statusCode)
+            case 500...599:
+                throw MotiqSendError.serverError(httpResponse.statusCode)
+            default:
+                throw MotiqSendError.serverError(0)
             }
+        } catch _ as URLError {
+            throw MotiqSendError.networkUnavailable
         }
-
-        task.resume()
     }
     
     private func encodeBatchToJSON(_ batch: EventBatch) -> Data? {
@@ -56,5 +60,13 @@ extension Motiq {
             return nil
         }
     }
+    
+}
+
+enum MotiqSendError: Error {
+    
+    case networkUnavailable
+    case serverError(Int)
+    case clientError(Int)
     
 }
