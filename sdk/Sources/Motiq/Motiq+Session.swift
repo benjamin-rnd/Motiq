@@ -14,8 +14,11 @@ extension Motiq {
         UUID().uuidString
     }
     
-    func handleAppBackground() {
-        trackAppClose()
+    func handleAppBackground() async {
+        cancelFlushTimer()
+        
+        await internalTrack(name: "app_closed", properties: [:])
+        flushQueue()
     }
     
     func handleAppLaunchFromBackground() {
@@ -23,12 +26,9 @@ extension Motiq {
         trackAppLaunch()
     }
     
-    func handleAppTerminate() {
-        print("App terminated")
-        // TODO: Add offline queueing here --> will be added later
-    }
-    
     func setupAppLifecycleObservers() {
+        NotificationCenter.default.removeObserver(self)
+        
         NotificationCenter.default.addObserver(
             forName: UIApplication.didEnterBackgroundNotification,
             object: nil,
@@ -43,14 +43,6 @@ extension Motiq {
             queue: .main
         ) { [weak self] _ in
             Task { await self?.handleAppLaunchFromBackground() }
-        }
-        
-        NotificationCenter.default.addObserver(
-            forName: UIApplication.willTerminateNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            Task { await self?.handleAppTerminate() }
         }
     }
     

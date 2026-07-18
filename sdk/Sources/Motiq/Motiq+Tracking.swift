@@ -21,7 +21,7 @@ extension Motiq {
     ///   - properties: An optional dictionary of additional metadata to attach to the event.
     ///     Defaults to `[:]`.
     ///
-    /// - Note: Has no effect if ``isEnabled`` is set to `false`.
+    /// - Note: Has no effect if Motiq has been disabled via ``setEnabled(_:)``.
     ///
     /// ## Example
     /// ```swift
@@ -78,10 +78,6 @@ extension Motiq {
         ]
         
         track("app_launched", properties: properties)
-    }
-    
-    func trackAppClose() {
-        track("app_closed")
     }
     
 }

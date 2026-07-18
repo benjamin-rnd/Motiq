@@ -22,26 +22,12 @@ public actor Motiq {
     /// The shared Motiq instance. Use this to access all SDK functionality.
     public static let shared = Motiq()
     
-    /// Controls whether the SDK actively tracks and flushes events.
-    /// Set to `false` to pause all tracking — no events will be queued or sent to the
-    /// backend until re-enabled. Useful for suppressing analytics during testing.
-    ///
-    /// Defaults to `true`.
-    ///
-    /// ## Example
-    /// ```swift
-    /// // Disable
-    /// Motiq.shared.isEnabled = false
-    ///
-    /// // Re-enable later
-    /// Motiq.shared.isEnabled = true
-    /// ```
-    public var isEnabled: Bool = true
-    
+    var isEnabled: Bool = true
     var queue: [Event] = []
     var sessionID: String = ""
     var isFlushTimerRunning: Bool = false
     var flushTask: Task<Void, Never>?
+    var isFlushing: Bool = false
     
     var cachedIDFV: String = ""
     var cachedOSVersion: String = ""
@@ -56,6 +42,24 @@ public actor Motiq {
     var debugMode: Bool = true
 
     private init() {}
+    
+    /// Controls whether the SDK actively tracks and flushes events.
+    /// Set to `false` to pause all tracking - no events will be queued or sent to the
+    /// backend until re-enabled. Useful for suppressing analytics during testing.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// ## Example
+    /// ```swift
+    /// // Disable tracking
+    /// Motiq.shared.setEnabled(false)
+    ///
+    /// // Re-enable later
+    /// Motiq.shared.setEnabled(true)
+    /// ```
+    public func setEnabled(_ enabled: Bool) {
+        isEnabled = enabled
+    }
     
     /// Configures the Motiq SDK with the given settings.
     ///
@@ -78,7 +82,7 @@ public actor Motiq {
     ///     event batches via `dump()` instead of sending them to the backend. Useful during
     ///     development to inspect payloads without polluting your analytics data. Disable in production.
     ///
-    /// - Note: To disable Motiq entirely at runtime (e.g. for testing), set ``isEnabled`` to `false`.
+    /// - Note: To disable Motiq entirely at runtime (e.g. for testing), call ``setEnabled(_:)`` with `false`.
     ///
     /// - Important: Must be called before any call to ``track(_:properties:)``.
     ///   Calling `track` before `configure` will result in events being silently dropped.
@@ -114,6 +118,7 @@ public actor Motiq {
         self.cachedOSVersion = await getOSVersion()
         self.cachedOrientation = await getOrientation()
         self.cachedEnabledAccessibilityFeatures = await getEnabledAccessibilityFeatures()
+        
         trackAppLaunch()
         setupAppLifecycleObservers()
     }
