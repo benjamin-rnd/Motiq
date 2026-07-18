@@ -8,9 +8,7 @@
 extension Motiq {
     
     func buildBatch() -> EventBatch {
-        let batch = EventBatch(events: queue)
-        
-        return batch
+        EventBatch(events: queue)
     }
     
 }
