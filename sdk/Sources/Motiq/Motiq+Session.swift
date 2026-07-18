@@ -14,8 +14,8 @@ extension Motiq {
         UUID().uuidString
     }
     
-    func handleAppBackground() {
-        trackAppClose()
+    func handleAppBackground() async {
+        await internalTrack(name: "app_closed", properties: [:])
         flushQueue()
     }
     

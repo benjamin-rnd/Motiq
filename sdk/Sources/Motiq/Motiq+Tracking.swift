@@ -80,8 +80,4 @@ extension Motiq {
         track("app_launched", properties: properties)
     }
     
-    func trackAppClose() {
-        track("app_closed")
-    }
-    
 }
