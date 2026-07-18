@@ -27,6 +27,7 @@ public actor Motiq {
     var sessionID: String = ""
     var isFlushTimerRunning: Bool = false
     var flushTask: Task<Void, Never>?
+    var isFlushing: Bool = false
     
     var cachedIDFV: String = ""
     var cachedOSVersion: String = ""
@@ -120,8 +121,6 @@ public actor Motiq {
         
         trackAppLaunch()
         setupAppLifecycleObservers()
-        
-        flushPersistedQueue()
     }
     
     /// Controls whether events are attributed to a single app or across multiple apps

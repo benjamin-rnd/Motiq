@@ -15,6 +15,8 @@ extension Motiq {
     }
     
     func handleAppBackground() async {
+        cancelFlushTimer()
+        
         await internalTrack(name: "app_closed", properties: [:])
         flushQueue()
     }
@@ -25,6 +27,8 @@ extension Motiq {
     }
     
     func setupAppLifecycleObservers() {
+        NotificationCenter.default.removeObserver(self)
+        
         NotificationCenter.default.addObserver(
             forName: UIApplication.didEnterBackgroundNotification,
             object: nil,

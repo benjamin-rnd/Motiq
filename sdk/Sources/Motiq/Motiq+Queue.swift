@@ -32,18 +32,26 @@ extension Motiq {
         
         flushTask = Task {
             try? await Task.sleep(for: .seconds(flushIntervalSeconds))
+            guard !Task.isCancelled else { return }
             flushQueue()
         }
     }
     
-    func flushQueue() {
-        guard !queue.isEmpty else { return }
-        let batch = buildBatch()
-        
+    func cancelFlushTimer() {
         isFlushTimerRunning = false
         flushTask?.cancel()
+    }
+    
+    func flushQueue() {
+        guard !queue.isEmpty else { return }
+        guard !isFlushing else { return }
+        isFlushing = true
+        
+        cancelFlushTimer()
+        let batch = buildBatch()
         
         Task {
+            defer { isFlushing = false }
             do {
                 try await sendBatchToAPI(batch)
                 clearQueue()

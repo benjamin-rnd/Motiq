@@ -10,9 +10,6 @@ extension Motiq {
     func buildBatch() -> EventBatch {
         let batch = EventBatch(events: queue)
         
-        isFlushTimerRunning = false
-        flushTask?.cancel()
-        
         return batch
     }
     
