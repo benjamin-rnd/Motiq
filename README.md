@@ -35,7 +35,7 @@ import Motiq
 @main
 struct MyApp: App {
   init() {
-    Motiq.shared.configure(baseURL: "https://api.your-server.com", apiKey: "yourApiKey",
+    Motiq.shared.configure(baseURL: "https://api.your-server.com", apiSecret: "yourApiSecret",
                            batchSize: 4, flushIntervalSeconds: 40, debugMode: false)
   }
 
