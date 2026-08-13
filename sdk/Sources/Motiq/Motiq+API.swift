@@ -30,8 +30,6 @@ extension Motiq {
         let signature = generateHMACSignature(for: payload, and: timestamp)
         
         var request = URLRequest(url: apiEndpoint)
-        // TODO: remove this before merging PR !!
-        // request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
         request.setValue(timestamp, forHTTPHeaderField: "X-Timestamp")
         request.setValue(signature, forHTTPHeaderField: "X-Signature")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
