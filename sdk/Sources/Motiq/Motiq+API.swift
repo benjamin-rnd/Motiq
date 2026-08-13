@@ -74,7 +74,7 @@ extension Motiq {
     private func generateHMACSignature(for payload: Data, and timestamp: String) -> String {
         let timestampData = timestamp.data(using: .utf8)!
         let message = payload + timestampData
-        let key = SymmetricKey(data: apiKey.data(using: .utf8)!)
+        let key = SymmetricKey(data: apiSecret.data(using: .utf8)!)
         
         let signature = HMAC<SHA256>.authenticationCode(for: message, using: key)
         return Data(signature).map { String(format: "%02x", $0) }.joined()
