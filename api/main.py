@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Request, Depends, HTTPException, status
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from api.database import Base, engine, get_db
-from api.auth import verify_api_key, verify_hmac_signature, verify_timestamp
-from api.pydantic_schemas import EventBatch
-from api.orm_models import Event
+
 import api.crud as crud
+from api.auth import verify_api_key, verify_hmac_signature, verify_timestamp
+from api.database import Base, engine, get_db
+from api.orm_models import Event
+from api.pydantic_schemas import EventBatch
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
