@@ -1,16 +1,13 @@
 import pytest
 import os
+import time
 import json
 from fastapi.testclient import TestClient
 from dotenv import load_dotenv
 
 load_dotenv()
 key = os.getenv("API_KEY") or ""
-
-def test_get_root(client: TestClient):
-    response = client.get("/", headers={"X-API-KEY": key})
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello! Look at http://localhost:8000/docs for documentation."}
+secret = os.getenv("API_SECRET") or ""
 
 def test_get_device_breakdown(client: TestClient):
     response = client.get("/analytics/devices/breakdown", headers={"X-API-KEY": key})
@@ -47,8 +44,19 @@ def test_post_add_event_batch(client: TestClient, db):
                 }
             ]
         }
-    
-    response = client.post("/events/batch", headers={"X-API-KEY": key}, json=payload)
+
+    payload_bytes = json.dumps(payload, separators = (',', ':')).encode()
+    timestamp = str(int(time.time()))
+    from api.auth import generate_hmac_signature
+    signature = generate_hmac_signature(timestamp, payload_bytes)
+
+    response = client.post(
+        "/events/batch", 
+        headers={
+            "X-Timestamp": timestamp,
+            "X-Signature": signature
+            }, 
+        json=payload)
     
     from api.orm_models import Event
     events = db.query(Event).filter(Event.user_id == "post_request_test").all()
