@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
 from api.database import Base, engine, get_db
-from api.auth import verify_api_key, verify_hmac_signature
+from api.auth import verify_api_key, verify_hmac_signature, verify_timestamp
 from api.pydantic_schemas import EventBatch
 from api.orm_models import Event
 import api.crud as crud
@@ -24,13 +24,17 @@ async def add_event_batch(request: Request, batch: EventBatch, db: Session = Dep
     if not timestamp or not signature:
         raise HTTPException(status_code=401, detail="Missing authentication headers")
 
-    raw_body = await request.body()
-    signature_valid = verify_hmac_signature(signature, timestamp, raw_body)
+    timestamp_valid = verify_timestamp(timestamp)
+    if timestamp_valid == False:
+        raise HTTPException(status_code=401, detail="Expired timestamp")
 
-    if signature_valid == True:
-        crud.create_event(db, batch)
-    else:
+    raw_body = await request.body()
+
+    signature_valid = verify_hmac_signature(signature, timestamp, raw_body)
+    if signature_valid == False:
         raise HTTPException(status_code=401, detail="Invalid signature")
+    else:
+        crud.create_event(db, batch)
 
 # MARK: GET
 @app.get("/analytics/devices/breakdown", status_code=status.HTTP_200_OK)

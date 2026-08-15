@@ -19,7 +19,14 @@ def verify_api_key(key: str = Security(api_key_header)):
     return key
 
 def verify_hmac_signature(given_signature: str, timestamp: str, body: bytes) -> bool:
-    # Timestamp-Check
+    expected_signature = generate_hmac_signature(timestamp, body)
+
+    if hmac.compare_digest(expected_signature, given_signature):
+        return True
+    else:
+        return False
+
+def verify_timestamp(timestamp: str) -> bool:
     try:
         ts = int(timestamp)
     except ValueError:
@@ -27,14 +34,8 @@ def verify_hmac_signature(given_signature: str, timestamp: str, body: bytes) -> 
 
     if abs(time.time() - ts) > 300:
         return False
-
-    # HMAC-Check
-    expected_signature = generate_hmac_signature(timestamp, body)
-
-    if hmac.compare_digest(expected_signature, given_signature):
-        return True
     else:
-        return False
+        return True
 
 def generate_hmac_signature(timestamp: str, body: bytes) -> str:
     message = timestamp.encode() + body
