@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Request, Depends, HTTPException, status
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
 from api.database import Base, engine, get_db
-from api.auth import verify_api_key
+from api.auth import verify_api_key, verify_hmac_signature
 from api.pydantic_schemas import EventBatch
 from api.orm_models import Event
 import api.crud as crud
@@ -16,6 +16,22 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
 
+# MARK: POST
+@app.post("/events/batch", status_code=status.HTTP_201_CREATED)
+async def add_event_batch(request: Request, batch: EventBatch, db: Session = Depends(get_db)):
+    timestamp = request.headers.get("X-Timestamp")
+    signature = request.headers.get("X-Signature")
+    if not timestamp or not signature:
+        raise HTTPException(status_code=401, detail="Missing authentication headers")
+
+    raw_body = await request.body()
+    signature_valid = verify_hmac_signature(signature, timestamp, raw_body)
+
+    if signature_valid == True:
+        crud.create_event(db, batch)
+    else:
+        raise HTTPException(status_code=401, detail="Invalid signature")
+
 # MARK: GET
 @app.get("/analytics/devices/breakdown", status_code=status.HTTP_200_OK)
 def get_device_breakdown(db: Session = Depends(get_db), key: str = Depends(verify_api_key)):
@@ -27,8 +43,3 @@ def get_device_breakdown(db: Session = Depends(get_db), key: str = Depends(verif
 
     return {"number_of_devices": number_of_devices,
             "percentage_of_devices": percentage_of_devices}
-
-# MARK: POST
-@app.post("/events/batch", status_code=status.HTTP_201_CREATED)
-def add_event_batch(batch: EventBatch, db: Session = Depends(get_db), key: str = Depends(verify_api_key)):
-    crud.create_event(db, batch)
