@@ -14,38 +14,9 @@ def test_get_device_breakdown(client: TestClient):
     assert response.status_code == 200
     assert response.json() == {"number_of_devices":{"iPhone 15 Pro":3,"iPhone 14":3,"iPhone 13":3,"iPhone 15":2},
                                 "percentage_of_devices":{"iPhone 13":27.3,"iPhone 14":27.3,"iPhone 15":18.2,"iPhone 15 Pro":27.3}}
-    
-def test_post_add_event_batch(client: TestClient, db):
-    payload = {
-            "events": [
-                {
-                    "event_name": "app_launched",
-                    "user_id": "post_request_test",
-                    "session_id": "F9E8D7C6-B5A4-3210-FEDC-BA9876543210",
-                    "timestamp": "2026-06-20T01:30:00Z",
-                    "properties": {
-                        "device_model": "iPhone 15",
-                        "os_version": "iOS 26.4",
-                        "app_version": "1.2.0",
-                        "color_scheme": "dark",
-                        "accessibility_features": ["voiceover","larger_text"]
-                    }
-                },
-                {
-                    "event_name": "button_tapped",
-                    "user_id": "post_request_test",
-                    "session_id": "F9E8D7C6-B5A4-3210-FEDC-BA9876543210",
-                    "timestamp": "2026-06-20T01:30:08Z",
-                    "properties": {
-                        "button_id": "login_button",
-                        "screen": "account_settings",
-                        "foo": "bar"
-                    }
-                }
-            ]
-        }
 
-    payload_bytes = json.dumps(payload, separators = (',', ':')).encode()
+def test_post_add_event_batch_success(client: TestClient, db, event_batch_payload):
+    payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
     timestamp = str(int(time.time()))
     from api.auth import generate_hmac_signature
     signature = generate_hmac_signature(timestamp, payload_bytes)
@@ -56,7 +27,7 @@ def test_post_add_event_batch(client: TestClient, db):
             "X-Timestamp": timestamp,
             "X-Signature": signature
             }, 
-        json=payload)
+        json=event_batch_payload)
     
     from api.orm_models import Event
     events = db.query(Event).filter(Event.user_id == "post_request_test").all()
@@ -69,3 +40,79 @@ def test_post_add_event_batch(client: TestClient, db):
     assert events[1].event_name == "button_tapped"
     assert events[1].timestamp == "2026-06-20T01:30:08Z"
     assert len(json.loads(events[1].properties)) == 3
+
+def test_post_add_event_batch_invalid_signature(client: TestClient, db, event_batch_payload):
+    payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
+    timestamp = str(int(time.time()))
+    signature = "this is a wrong signature"
+
+    response = client.post(
+        "/events/batch", 
+        headers={
+            "X-Timestamp": timestamp,
+            "X-Signature": signature
+            }, 
+        json=event_batch_payload)
+
+    from api.orm_models import Event
+    events = db.query(Event).filter(Event.user_id == "post_request_test").all()
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid signature"
+    assert len(events) == 0
+
+def test_post_add_event_batch_missing_header_signature(client: TestClient, db, event_batch_payload):
+    payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
+    timestamp = str(int(time.time()))
+
+    response = client.post(
+        "/events/batch", 
+        headers={"X-Timestamp": timestamp},
+        json=event_batch_payload)
+
+    from api.orm_models import Event
+    events = db.query(Event).filter(Event.user_id == "post_request_test").all()
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Missing authentication headers"
+    assert len(events) == 0
+
+def test_post_add_event_batch_missing_header_timestamp(client: TestClient, db, event_batch_payload):
+    payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
+    timestamp = str(int(time.time()))
+    from api.auth import generate_hmac_signature
+    signature = generate_hmac_signature(timestamp, payload_bytes)
+
+    response = client.post(
+        "/events/batch", 
+        headers={"X-Signature": signature},
+        json=event_batch_payload)
+
+    from api.orm_models import Event
+    events = db.query(Event).filter(Event.user_id == "post_request_test").all()
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Missing authentication headers"
+    assert len(events) == 0
+
+def test_post_add_event_batch_expired_timestamp(client: TestClient, db, event_batch_payload):
+    payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
+
+    expired_timestamp = str(int(time.time()) - 301)
+    from api.auth import generate_hmac_signature
+    signature = generate_hmac_signature(expired_timestamp, payload_bytes)
+
+    response = client.post(
+        "/events/batch",
+        headers={
+            "X-Timestamp": expired_timestamp,
+            "X-Signature": signature
+            }, 
+        json=event_batch_payload)
+    
+    from api.orm_models import Event
+    events = db.query(Event).filter(Event.user_id == "post_request_test").all()
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Expired timestamp"
+    assert len(events) == 0
