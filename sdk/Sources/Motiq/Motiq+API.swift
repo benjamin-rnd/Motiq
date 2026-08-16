@@ -5,6 +5,7 @@
 //  Created by Benjamin Arndt on 21.06.26.
 //
 
+import CryptoKit
 import Foundation
 
 extension Motiq {
@@ -24,9 +25,13 @@ extension Motiq {
             print("Batch not sent due to error while accessing correct API endpoint.")
             return
         }
-
+        
+        let timestamp = getCurrentTimestamp()
+        let signature = generateHMACSignature(for: payload, and: timestamp)
+        
         var request = URLRequest(url: apiEndpoint)
-        request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+        request.setValue(timestamp, forHTTPHeaderField: "X-Timestamp")
+        request.setValue(signature, forHTTPHeaderField: "X-Signature")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = payload
@@ -59,6 +64,20 @@ extension Motiq {
             print("Batch not sent due to encoding error: \(error)")
             return nil
         }
+    }
+    
+    private func getCurrentTimestamp() -> String {
+        // First convert to Int, since Date().timeIntervalSince1970) returns a Double, which cuts of the decimal places without rounding
+        String(Int(Date().timeIntervalSince1970))
+    }
+    
+    private func generateHMACSignature(for payload: Data, and timestamp: String) -> String {
+        let timestampData = timestamp.data(using: .utf8)!
+        let message = payload + timestampData
+        let key = SymmetricKey(data: apiSecret.data(using: .utf8)!)
+        
+        let signature = HMAC<SHA256>.authenticationCode(for: message, using: key)
+        return Data(signature).map { String(format: "%02x", $0) }.joined()
     }
     
 }

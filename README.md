@@ -1,6 +1,6 @@
 # Motiq
 
-Motiq is a self-hosted and privacy-friendly analytics SDK for iOS. It is a lightweight alternative to tools like Firebase Analytics (which is owned by Google) or PostHog.
+Motiq is a self-hosted and privacy-friendly analytics SDK for iOS. It is a lightweight alternative to tools like Google Analytics.
 
 Its main goal is to help you, as an app developer, better understand your users and figure out how they use your app.
 
@@ -35,7 +35,7 @@ import Motiq
 @main
 struct MyApp: App {
   init() {
-    Motiq.shared.configure(baseURL: "https://api.your-server.com", apiKey: "yourApiKey",
+    Motiq.shared.configure(baseURL: "https://api.your-server.com", apiSecret: "yourApiSecret",
                            batchSize: 4, flushIntervalSeconds: 40, debugMode: false)
   }
 
@@ -52,17 +52,17 @@ The *server* is a FastAPI application and a SQLite database.
 1. Clone the repository and install dependencies:
 ```bash
 git clone https://github.com/benjamin-rnd/Motiq
-cd motiq/api
+cd Motiq
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r api/requirements.txt
 ```
 2. Start the server:
 ```bash
-uvicorn api.main:app --host 0.0.0.0 --port 8000
+uvicorn api.main:app --host 127.0.0.1 --port 8000
 ```
 
 > [!TIP]
-> For production use, I recommended to run uvicorn as a `systemd` service behind a reverse proxy (e.g. Apache or nginx).
+> I recommended to run uvicorn as a `systemd` service behind a reverse proxy like Caddy or nginx.
 
 > Detailed setup instructions, including reverse proxy configuration, will be 
 > available in the server documentation soon.
@@ -73,7 +73,7 @@ uvicorn api.main:app --host 0.0.0.0 --port 8000
 After configuration, you can track custom events anywhere in your app:
 
 ```swift
-Motiq.track("button_tapped", properties: ["button": "sign_up"])
+Motiq.shared.track("button_tapped", properties: ["button": "sign_up"])
 ```
 
 Event names and properties are fully customizable - use any name and key-value pairs 

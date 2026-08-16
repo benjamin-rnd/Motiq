@@ -1,6 +1,8 @@
 import json
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
 from api.orm_models import Event as EventModel
 from api.pydantic_schemas import EventBatch, Event as EventSchema
 

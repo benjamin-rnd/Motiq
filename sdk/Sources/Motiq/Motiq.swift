@@ -9,12 +9,12 @@ import Foundation
 
 /// The Motiq analytics SDK for iOS.
 ///
-/// Use ``shared`` to access the singleton instance. Call ``configure(baseURL:apiKey:trackingMode:batchSize:flushIntervalSeconds:debugMode:)``
+/// Use ``shared`` to access the singleton instance. Call ``configure(baseURL:apiSecret:trackingMode:batchSize:flushIntervalSeconds:debugMode:)``
 /// once at app launch, then track events anywhere in your app with ``track(_:properties:)``.
 ///
 /// ## Quick Start
 /// ```swift
-/// Motiq.shared.configure(baseURL: "https://analytics.example.com", apiKey: "your-api-key")
+/// Motiq.shared.configure(baseURL: "https://analytics.example.com", apiSecret: "your-api-secret")
 /// Motiq.shared.track("button_tapped", properties: ["screen": "home", "variant": "A"])
 /// ```
 public actor Motiq {
@@ -35,7 +35,7 @@ public actor Motiq {
     var cachedEnabledAccessibilityFeatures: [String] = []
     
     var baseURL: URL?
-    var apiKey: String = ""
+    var apiSecret: String = ""
     var trackingMode: TrackingMode = .singleApp
     var batchSize: Int = 10
     var flushIntervalSeconds: Int = 45
@@ -68,8 +68,9 @@ public actor Motiq {
     ///
     /// - Parameters:
     ///   - baseURL: The base URL of your self-hosted Motiq backend (e.g. `"https://analytics.example.com"`).
-    ///   - apiKey: The API key used to authenticate requests against your Motiq backend.
-    ///     Sent as the `X-API-Key` HTTP header on every request.
+    ///   - apiSecret: The secret used to sign requests sent to your Motiq backend.
+    ///     Never transmitted over the network - used locally to generate an HMAC-SHA256 signature
+    ///     sent as the `X-Signature` HTTP header on every request.
     ///   - trackingMode: Controls whether events are attributed to a single app or shared
     ///     across multiple apps on the same Motiq instance. Defaults to `.singleApp`.
     ///     Pass `.crossApp(appId:)` with a stable identifier (e.g. your Bundle ID) to enable
@@ -92,22 +93,22 @@ public actor Motiq {
     /// // your @main App struct
     /// Motiq.shared.configure(
     ///     baseURL: "https://analytics.example.com",
-    ///     apiKey: "your-api-key",
+    ///     apiSecret: "your-api-secret",
     ///     trackingMode: .crossApp(appId: "com.example.MyApp"),
     ///     batchSize: 20,
     ///     flushIntervalSeconds: 60,
     ///     debugMode: false
     /// )
     ///  ```
-    public nonisolated func configure(baseURL: String, apiKey: String, trackingMode: TrackingMode = .singleApp, batchSize: Int = 10, flushIntervalSeconds: Int = 60, debugMode: Bool) {
+    public nonisolated func configure(baseURL: String, apiSecret: String, trackingMode: TrackingMode = .singleApp, batchSize: Int = 10, flushIntervalSeconds: Int = 60, debugMode: Bool) {
         Task {
-            await internalConfigure(baseURL: baseURL, apiKey: apiKey, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
+            await internalConfigure(baseURL: baseURL, apiSecret: apiSecret, trackingMode: trackingMode, batchSize: batchSize, flushIntervalSeconds: flushIntervalSeconds, debugMode: debugMode)
         }
     }
     
-    func internalConfigure(baseURL: String, apiKey: String, trackingMode: TrackingMode, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) async {
+    func internalConfigure(baseURL: String, apiSecret: String, trackingMode: TrackingMode, batchSize: Int, flushIntervalSeconds: Int, debugMode: Bool) async {
         self.baseURL = baseURL.hasSuffix("/") ? URL(string: String(baseURL.dropLast())) : URL(string: baseURL)
-        self.apiKey = apiKey
+        self.apiSecret = apiSecret
         self.trackingMode = trackingMode
         self.batchSize = batchSize
         self.flushIntervalSeconds = flushIntervalSeconds
