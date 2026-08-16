@@ -4,8 +4,8 @@ import time
 
 import pytest
 
-from fastapi.testclient import TestClient
 from dotenv import load_dotenv
+from fastapi.testclient import TestClient
 
 load_dotenv()
 key = os.getenv("API_KEY") or ""

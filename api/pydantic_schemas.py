@@ -1,5 +1,5 @@
-from typing import Any
 from pydantic import BaseModel
+from typing import Any
 
 class Event(BaseModel):
     event_name: str
