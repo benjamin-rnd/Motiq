@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 import api.crud as crud
 from api.auth import verify_api_key, verify_hmac_signature, verify_timestamp
-from api.database import Base, engine, get_db
+from api.database import Base, engine, get_db, get_readonly_db
 from api.orm_models import Event
 from api.pydantic_schemas import EventBatch
 

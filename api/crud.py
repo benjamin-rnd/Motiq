@@ -24,7 +24,7 @@ def create_event(db: Session, event_batch: EventBatch):
     db.add_all(db_events)
     db.commit()
 
-    # return is not needed, because after receiving events the API just answers with 200 OK
+    # return is not needed, because after receiving events the API just answers with 201 CREATED (in case of Success)
     # return db_events
 
 # MARK: Read
