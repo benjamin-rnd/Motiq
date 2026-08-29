@@ -28,6 +28,3 @@ env/
 
 # Other
 *.db
-
-# Allow database with mockdata --> never change this file, only change the json and generate database with it
-!api/tests/resources/mock.db
