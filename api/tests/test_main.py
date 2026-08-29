@@ -14,8 +14,8 @@ secret = os.getenv("API_SECRET") or ""
 def test_get_device_breakdown(client: TestClient):
     response = client.get("/analytics/devices/breakdown", headers={"X-API-KEY": key})
     assert response.status_code == 200
-    assert response.json() == {"number_of_devices":{"iPhone 15 Pro":3,"iPhone 14":3,"iPhone 13":3,"iPhone 15":2},
-                                "percentage_of_devices":{"iPhone 13":27.3,"iPhone 14":27.3,"iPhone 15":18.2,"iPhone 15 Pro":27.3}}
+    assert response.json() == {"absolute":{"iPhone 15 Pro":3,"iPhone 14":3,"iPhone 13":3,"iPhone 15":2},
+                                "percentage":{"iPhone 13":27.3,"iPhone 14":27.3,"iPhone 15":18.2,"iPhone 15 Pro":27.3}}
 
 def test_post_add_event_batch_success(client: TestClient, db, event_batch_payload):
     payload_bytes = json.dumps(event_batch_payload, separators = (',', ':')).encode()
