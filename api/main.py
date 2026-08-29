@@ -39,13 +39,41 @@ async def add_event_batch(request: Request, batch: EventBatch, db: Session = Dep
         crud.create_event(db, batch)
 
 # MARK: GET
+@app.get("/analytics/users/active", status_code=status.HTTP_200_OK)
+def get_dau_mau(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+    return {"dau": crud.get_daily_active_users(db),
+            "mau": crud.get_monthly_active_users(db)}
+
+@app.get("/analytics/users/new-vs-returning", status_code=status.HTTP_200_OK)
+def get_new_vs_returning_users(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+    return {
+        "last_7d": crud.get_new_vs_returning_users(db, 7),
+        "last_30d": crud.get_new_vs_returning_users(db, 30)
+    }
+
+@app.get("/analytics/users/retention", status_code=status.HTTP_200_OK)
+def get_retention(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+    return crud.get_retention(db)
+
+@app.get("/analytics/sessions/summary", status_code=status.HTTP_200_OK)
+def get_session_summary(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+    return {
+        "sessions_today": crud.get_sessions_today(db),
+        "avg_sessions_last_7d": crud.get_avg_sessions(db, 7),
+        "avg_sessions_last_30d": crud.get_avg_sessions(db, 30),
+        "avg_duration_per_session": crud.get_avg_duration_per_session(db)
+    }
+
 @app.get("/analytics/devices/breakdown", status_code=status.HTTP_200_OK)
-def get_device_breakdown(db: Session = Depends(get_db), key: str = Depends(verify_api_key)):
-    number_of_devices = crud.get_absolute_number_of_devices(db)
-    percentage_of_devices = crud.get_percentage_of_devices(db)
+def get_device_breakdown(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+    return crud.get_property_breakdown(db, "device_model")
 
-    if number_of_devices == {}:
-        return "No devices found"
-
-    return {"number_of_devices": number_of_devices,
-            "percentage_of_devices": percentage_of_devices}
+@app.get("/analytics/environment/breakdown", status_code=status.HTTP_200_OK)
+def get_environment_breakdown(db: Session = Depends(get_db), key: str = Depends(verify_api_key)):
+    return {
+        "os_version": crud.get_property_breakdown(db, "os_version"),
+        "color_scheme": crud.get_property_breakdown(db, "color_scheme"),
+        "orientation": crud.get_property_breakdown(db, "orientation"),
+        "connectivity": crud.get_property_breakdown(db, "connectivity"),
+        "accessibility_features": crud.get_accessbility_features(db)
+    }
