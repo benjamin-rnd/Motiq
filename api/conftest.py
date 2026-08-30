@@ -10,7 +10,7 @@ from api.database import get_db, Base
 from api.main import app
 from .tests import seed
 
-MOCK_DB = Path(__file__).parent / "tests" / "resources" / "mock.db"
+MOCK_DB = Path(__file__).parent / "tests" / "mock.db"
 
 @pytest.fixture(scope="session")
 def db():
