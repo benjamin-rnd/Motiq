@@ -16,7 +16,7 @@ api_key_header = APIKeyHeader(name="X-API-Key")
 
 def verify_api_key(key: str = Security(api_key_header)):
     if key != API_KEY:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API key")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API Key")
     return key
 
 def verify_hmac_signature(given_signature: str, timestamp: str, body: bytes) -> bool:
