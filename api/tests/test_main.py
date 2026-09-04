@@ -6,6 +6,7 @@ import pytest
 
 from dotenv import load_dotenv
 from fastapi.testclient import TestClient
+from sqlalchemy import text
 
 load_dotenv()
 key = os.getenv("API_KEY") or ""
@@ -37,6 +38,10 @@ def test_post_add_event_batch_success(client: TestClient, db, event_batch_payloa
     assert events[1].event_name == "button_tapped"
     assert events[1].timestamp == "2026-06-20T01:30:08Z"
     assert len(json.loads(events[1].properties)) == 3
+
+    # teardown
+    db.execute(text(f"DELETE FROM events WHERE user_id = '{test_placeholder}'"))
+    db.commit()
 
 def test_post_add_event_batch_invalid_signature(client: TestClient, db, event_batch_payload):
     test_placeholder = "post_test_success_invalid_signature"
