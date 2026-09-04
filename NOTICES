@@ -1,0 +1,51 @@
+NOTICES
+
+This project uses the following third-party components:
+
+---
+
+AnyCodable
+Copyright (c) 2018 Read Evaluate Press, LLC
+Licensed under the MIT License
+https://github.com/Flight-School/AnyCodable
+
+---
+
+DeviceKit
+Copyright (c) 2015 Dennis Weissmann
+Licensed under the MIT License
+https://github.com/devicekit/devicekit
+
+---
+
+Uvicorn
+Copyright (c) 2017-present, Encode OSS Ltd
+Licensed under the BSD 3-Clause License
+https://github.com/Kludex/uvicorn
+
+---
+
+FastAPI
+Copyright (c) 2018 Sebastián Ramírez
+Licensed under the MIT License
+https://github.com/fastapi/fastapi
+
+---
+
+SQLAlchemy
+Copyright 2005-2026 SQLAlchemy authors and contributors
+Licensed under the MIT License
+https://github.com/sqlalchemy/sqlalchemy
+
+---
+
+Pydantic
+Copyright (c) 2017 to present Pydantic Services Inc. and individual contributors
+Licensed under the MIT License
+https://github.com/pydantic/pydantic
+
+---
+
+Material Symbols
+Licensed under the Apache License, Version 2.0
+https://github.com/google/material-design-icons
