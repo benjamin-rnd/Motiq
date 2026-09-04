@@ -85,43 +85,6 @@ def get_new_vs_returning_users(db: Session, number_of_days: int) -> dict[str, di
     return {"absolute": absolute,
             "percentage": percentages}
 
-def get_retention(db: Session) -> list[dict[str, int | float]]:
-    retention = []
-    for week in range(1, 5):
-        row = db.execute(
-            text(f"""
-                SELECT 
-                    count(DISTINCT user_id) AS cohort_size, 
-                    count(DISTINCT CASE WHEN user_id IN (
-                        SELECT DISTINCT user_id FROM events
-                        WHERE timestamp >= datetime('now', '-7 days')
-                    ) THEN user_id END) AS retained
-                FROM (
-                    SELECT user_id, min(timestamp) AS first_seen
-                    FROM events
-                    GROUP BY user_id
-                )
-                WHERE first_seen >= datetime('now', '-{week * 7} days')
-                AND first_seen < datetime('now', '-{(week - 1) * 7} days')
-            """)
-        ).fetchone()
-
-        if row is None:
-            continue
-
-        cohort_size = row.cohort_size
-        retained = row.retained
-        percentage = round(retained / cohort_size * 100, 1) if cohort_size > 0 else 0.0
-
-        retention.append({
-            "week": week,
-            "cohort_size": cohort_size,
-            "retained": retained,
-            "percentage": percentage
-        })
-
-    return retention
-
 def get_avg_duration_per_session(db: Session) -> float:
     return db.execute(
         text("""

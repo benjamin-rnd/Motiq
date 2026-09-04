@@ -51,10 +51,6 @@ def get_new_vs_returning_users(db: Session = Depends(get_readonly_db), key: str 
         "last_30d": crud.get_new_vs_returning_users(db, 30)
     }
 
-@app.get("/analytics/users/retention", status_code=status.HTTP_200_OK)
-def get_retention(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
-    return crud.get_retention(db)
-
 @app.get("/analytics/sessions/summary", status_code=status.HTTP_200_OK)
 def get_session_summary(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
     return {
