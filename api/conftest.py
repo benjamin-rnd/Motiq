@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from api.database import get_db, Base
+from api.database import Base, get_db, get_readonly_db
 from api.main import app
 from .tests import seed
 
@@ -32,6 +32,7 @@ def client(db):
         yield db
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_readonly_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
 
