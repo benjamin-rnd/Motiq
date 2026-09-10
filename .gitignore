@@ -28,3 +28,4 @@ env/
 
 # Other
 *.db
+config.js
