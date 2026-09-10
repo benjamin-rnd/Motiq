@@ -1,0 +1,4 @@
+const CONFIG = {
+    apiKey: "your-api-key",
+    baseUrl: "https://your-domain.com"
+};
