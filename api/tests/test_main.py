@@ -139,11 +139,11 @@ def test_get_new_vs_returning_users(client: TestClient):
     response_last30d = client.get("analytics/users/new-vs-returning?days=30", headers={"X-API-Key": key})
 
     assert response_last7d.status_code == 200
-    assert response_last7d.json()["last_7d"]["absolute"] == { "new_users": 5, "returning_users": 9 }
-    assert response_last7d.json()["last_7d"]["percentage"] == { "new_users": 35.7, "returning_users": 64.3 }
+    assert response_last7d.json()["absolute"] == { "new_users": 5, "returning_users": 9 }
+    assert response_last7d.json()["percentage"] == { "new_users": 35.7, "returning_users": 64.3 }
     assert response_last30d.status_code == 200
-    assert response_last30d.json()["last_30d"]["absolute"] == { "new_users": 20, "returning_users": 0 }
-    assert response_last30d.json()["last_30d"]["percentage"] == { "new_users": 100.0, "returning_users": 0.0 }
+    assert response_last30d.json()["absolute"] == { "new_users": 20, "returning_users": 0 }
+    assert response_last30d.json()["percentage"] == { "new_users": 100.0, "returning_users": 0.0 }
 
 def test_get_session_summary(client: TestClient):
     response = client.get("/analytics/sessions/summary", headers={"X-API-Key": key})
