@@ -45,10 +45,9 @@ def get_dau_mau(db: Session = Depends(get_readonly_db), key: str = Depends(verif
             "mau": crud.get_monthly_active_users(db)}
 
 @app.get("/analytics/users/new-vs-returning", status_code=status.HTTP_200_OK)
-def get_new_vs_returning_users(db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
+def get_new_vs_returning_users(days: int, db: Session = Depends(get_readonly_db), key: str = Depends(verify_api_key)):
     return {
-        "last_7d": crud.get_new_vs_returning_users(db, 7),
-        "last_30d": crud.get_new_vs_returning_users(db, 30)
+        f"last_{days}d": crud.get_new_vs_returning_users(db, days)
     }
 
 @app.get("/analytics/sessions/summary", status_code=status.HTTP_200_OK)

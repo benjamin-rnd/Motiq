@@ -45,7 +45,6 @@ def test_post_add_event_batch_success(client: TestClient, db, event_batch_payloa
 
 def test_post_add_event_batch_invalid_signature(client: TestClient, db, event_batch_payload):
     test_placeholder = "post_test_success_invalid_signature"
-    payload_bytes = json.dumps(event_batch_payload(test_placeholder), separators = (',', ':')).encode()
     timestamp = str(int(time.time()))
     signature = "this is a wrong signature"
 
@@ -66,7 +65,6 @@ def test_post_add_event_batch_invalid_signature(client: TestClient, db, event_ba
 
 def test_post_add_event_batch_missing_header_signature(client: TestClient, db, event_batch_payload):
     test_placeholder = "post_test_missing_signature"
-    payload_bytes = json.dumps(event_batch_payload(test_placeholder), separators = (',', ':')).encode()
     timestamp = str(int(time.time()))
 
     response = client.post(
@@ -137,13 +135,15 @@ def test_get_dau_mau_success(client: TestClient):
     assert response.json()["mau"] == 20
 
 def test_get_new_vs_returning_users(client: TestClient):
-    response = client.get("/analytics/users/new-vs-returning", headers={"X-API-Key": key})
+    response_last7d = client.get("/analytics/users/new-vs-returning?days=7", headers={"X-API-Key": key})
+    response_last30d = client.get("analytics/users/new-vs-returning?days=30", headers={"X-API-Key": key})
 
-    assert response.status_code == 200
-    assert response.json()["last_7d"]["absolute"] == { "new_users": 5, "returning_users": 9 }
-    assert response.json()["last_7d"]["percentage"] == { "new_users": 35.7, "returning_users": 64.3 }
-    assert response.json()["last_30d"]["absolute"] == { "new_users": 20, "returning_users": 0 }
-    assert response.json()["last_30d"]["percentage"] == { "new_users": 100.0, "returning_users": 0.0 }
+    assert response_last7d.status_code == 200
+    assert response_last7d.json()["last_7d"]["absolute"] == { "new_users": 5, "returning_users": 9 }
+    assert response_last7d.json()["last_7d"]["percentage"] == { "new_users": 35.7, "returning_users": 64.3 }
+    assert response_last30d.status_code == 200
+    assert response_last30d.json()["last_30d"]["absolute"] == { "new_users": 20, "returning_users": 0 }
+    assert response_last30d.json()["last_30d"]["percentage"] == { "new_users": 100.0, "returning_users": 0.0 }
 
 def test_get_session_summary(client: TestClient):
     response = client.get("/analytics/sessions/summary", headers={"X-API-Key": key})
