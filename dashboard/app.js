@@ -69,30 +69,33 @@ document.addEventListener('DOMContentLoaded', () => {
       .getPropertyValue('--border').trim();
   }
 
-  function sortDescending(labels, values) {
-    const paired = labels.map((label, i) => ({ label, value: values[i] }));
+  function sortDescending(labels, values, absolutes = []) {
+    const paired = labels.map((label, i) => ({ label, value: values[i], absolute: absolutes[i] ?? null }));
     paired.sort((a, b) => b.value - a.value);
     return {
-      labels: paired.map(p => p.label),
-      values: paired.map(p => p.value),
+      labels:    paired.map(p => p.label),
+      values:    paired.map(p => p.value),
+      absolutes: paired.map(p => p.absolute),
     };
   }
 
   // ── Donut chart ──────────────────────────────────────────
-  function renderDonut(canvasId, legendId, newPct, returningPct) {
+  function renderDonut(canvasId, legendId, newPct, returningPct, newAbs, returningAbs) {
     const ctx = document.getElementById(canvasId).getContext('2d');
 
     // HTML legend
     const legend = document.getElementById(legendId);
     if (legend) {
+      const returningAbsStr = returningAbs != null ? ` (${returningAbs})` : '';
+      const newAbsStr       = newAbs != null       ? ` (${newAbs})`       : '';
       legend.innerHTML = `
         <div class="donut-legend-item">
           <span class="donut-legend-dot" style="background:${COLORS.returning}"></span>
-          Returning: ${returningPct}%
+          Returning: ${returningPct}%${returningAbsStr}
         </div>
         <div class="donut-legend-item">
           <span class="donut-legend-dot" style="background:${COLORS.new}"></span>
-          New: ${newPct}%
+          New: ${newPct}%${newAbsStr}
         </div>
       `;
     }
@@ -119,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Bar chart (devices) ──────────────────────────────────
-  function renderDeviceChart(labels, values) {
+  function renderDeviceChart(labels, values, absolutes = []) {
     const barHeight = 28;
     const padding = 40;
     const totalHeight = labels.length * barHeight + padding;
@@ -145,7 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (ctx) => ` ${ctx.raw}%`
+              label: (ctx) => {
+                const abs = absolutes[ctx.dataIndex];
+                return abs != null ? ` ${ctx.raw}% (${abs})` : ` ${ctx.raw}%`;
+              }
             }
           }
         },
@@ -154,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid: { color: getGridColor() },
             ticks: {
               color: getTextColor(),
-              font: { family: 'Inter', size: 11 },
+              font: { family: "'Inter', system-ui, -apple-system, sans-serif", size: 11 },
               callback: (v) => `${v}%`
             },
             max: 100,
@@ -163,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid: { display: false },
             ticks: {
               color: getTextColor(),
-              font: { family: 'Inter', size: 12 },
+              font: { family: "'Inter', system-ui, -apple-system, sans-serif", size: 12 },
             }
           }
         }
@@ -193,17 +199,21 @@ document.addEventListener('DOMContentLoaded', () => {
       setValue('stat-duration', formatDuration(sessions.avg_duration_per_session));
 
       // /analytics/users/new-vs-returning?days=N → { absolute: {...}, percentage: { new_users, returning_users } }
-      renderDonut('chart-nvr-7d',  'legend-nvr-7d',  nvr7.percentage.new_users,  nvr7.percentage.returning_users);
-      renderDonut('chart-nvr-30d', 'legend-nvr-30d', nvr30.percentage.new_users, nvr30.percentage.returning_users);
+      renderDonut('chart-nvr-7d',  'legend-nvr-7d',  nvr7.percentage.new_users,  nvr7.percentage.returning_users,  nvr7.absolute.new_users,  nvr7.absolute.returning_users);
+      renderDonut('chart-nvr-30d', 'legend-nvr-30d', nvr30.percentage.new_users, nvr30.percentage.returning_users, nvr30.absolute.new_users, nvr30.absolute.returning_users);
 
       // /analytics/devices/breakdown → { absolute: {...}, percentage: { "iPhone X": 20.0, ... } }
-      const sorted = sortDescending(Object.keys(devices.percentage), Object.values(devices.percentage));
-      renderDeviceChart(sorted.labels, sorted.values);
+      const sorted = sortDescending(
+        Object.keys(devices.percentage),
+        Object.values(devices.percentage),
+        Object.values(devices.absolute)
+      );
+      renderDeviceChart(sorted.labels, sorted.values, sorted.absolutes);
 
     } catch (err) {
       console.error('Failed to load overview data:', err);
     }
   }
 
-  document.fonts.ready.then(() => loadOverview());
+  loadOverview();
 });
