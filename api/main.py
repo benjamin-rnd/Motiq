@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 import api.crud as crud
@@ -17,6 +18,13 @@ async def lifespan(app: FastAPI):
     # shutdown
 
 app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["null"],
+    allow_methods=["GET"],
+    allow_headers=["X-API-Key"],
+)
 
 # MARK: POST
 @app.post("/events/batch", status_code=status.HTTP_201_CREATED)
