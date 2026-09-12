@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Motiq</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <button class="sidebar-toggle icon-btn" id="sidebar-toggle" title="Collapse sidebar">
+        <img src="icons/menu.svg" alt="Menu" class="icon" />
+      </button>
+
+      <ul class="nav-list">
+        <li>
+          <a href="index.html" class="nav-item active" data-label="Overview">
+            <img src="icons/monitoring.svg" alt="" class="icon" />
+            <span class="nav-label">Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="events.html" class="nav-item" data-label="Event Explorer">
+            <img src="icons/manage_search.svg" alt="" class="icon" />
+            <span class="nav-label">Event Explorer</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item disabled" data-label="Funnels">
+            <img src="icons/filter_alt.svg" alt="" class="icon" />
+            <span class="nav-label">Funnels</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item disabled" data-label="Users">
+            <img src="icons/group.svg" alt="" class="icon" />
+            <span class="nav-label">Users</span>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="nav-list nav-list--bottom">
+        <li>
+          <a href="#" class="nav-item disabled" data-label="About">
+            <img src="icons/info.svg" alt="" class="icon" />
+            <span class="nav-label">About</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+
+    <!-- Header -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="app-name" id="app-name">Motiq</span>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">
+          <img src="icons/dark_mode.svg" alt="Toggle dark mode" class="icon" id="theme-icon" />
+        </button>
+        <button class="icon-btn" title="Settings">
+          <img src="icons/settings.svg" alt="Settings" class="icon" />
+        </button>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="content" id="content">
+
+      <!-- Grid: KPI cards + New vs Returning + Session stats -->
+      <div class="grid-main">
+
+        <div class="card card--stat">
+          <span class="card-label">Daily Active Users</span>
+          <span class="card-value" id="stat-dau">—</span>
+        </div>
+
+        <div class="card card--stat">
+          <span class="card-label">Monthly Active Users</span>
+          <span class="card-value" id="stat-mau">—</span>
+        </div>
+
+        <div class="card card--stat">
+          <span class="card-label">Today's Sessions</span>
+          <span class="card-value" id="stat-sessions">—</span>
+        </div>
+
+        <div class="card card--donut" style="grid-column: 4; grid-row: 1 / 3;">
+          <span class="card-label">New vs. Returning Users</span>
+          <div class="donut-charts">
+            <div class="donut-wrap">
+              <canvas id="chart-nvr-7d"></canvas>
+              <div class="donut-legend" id="legend-nvr-7d"></div>
+              <span class="donut-period">Last 7 days</span>
+            </div>
+            <div class="donut-wrap">
+              <canvas id="chart-nvr-30d"></canvas>
+              <div class="donut-legend" id="legend-nvr-30d"></div>
+              <span class="donut-period">Last 30 days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--stat card--stat-dual" style="grid-column: span 2;">
+          <span class="card-label">Avg. Sessions per Day</span>
+          <div class="stat-dual">
+            <div>
+              <span class="card-value" id="stat-spd-7d">—</span>
+              <span class="stat-period">last 7 days</span>
+            </div>
+            <div>
+              <span class="card-value" id="stat-spd-30d">—</span>
+              <span class="stat-period">last 30 days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--stat">
+          <span class="card-label">Avg. Duration per Session</span>
+          <span class="card-value" id="stat-duration">—</span>
+        </div>
+
+      </div>
+
+      <!-- Row 3: Device Models -->
+      <div class="grid-row grid-row--bottom">
+
+        <div class="card card--chart">
+          <span class="card-label">Device Models</span>
+          <div class="chart-wrap">
+            <canvas id="chart-devices"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
