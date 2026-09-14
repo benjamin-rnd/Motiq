@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./database.db"
-READONLY_DATABASE_URL = "sqlite:///./database.db?mode=ro"
+DATABASE_URL = "sqlite:///./api/database.db"
+READONLY_DATABASE_URL = "sqlite:///./api/database.db?mode=ro"
 
 engine = create_engine(
     DATABASE_URL,
