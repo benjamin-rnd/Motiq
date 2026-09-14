@@ -1,4 +1,4 @@
-/* ─── Theme ──────────────────────────────────────────────── */
+// Theme
 (function () {
   const saved = localStorage.getItem('motiq-theme') ?? 'light';
   document.documentElement.dataset.theme = saved;
@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Theme toggle ────────────────────────────────────────
+  // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
   themeToggle.addEventListener('click', () => {
     const isDark = document.documentElement.dataset.theme === 'dark';
@@ -15,19 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('motiq-theme', next);
   });
 
-  // ── Sidebar collapse ────────────────────────────────────
+  // collapse Sidebar
   const sidebar = document.getElementById('sidebar');
   const sidebarToggle = document.getElementById('sidebar-toggle');
   sidebarToggle.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
   });
 
-  // ── API helpers ─────────────────────────────────────────
+  // API helpers
   async function apiFetch(path) {
     let baseUrl = CONFIG.baseUrl;
     if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, -1);
     }
+
     const res = await fetch(`${baseUrl}${path}`, {
       headers: { 'X-API-Key': CONFIG.apiKey }
     });
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${m} min`;
   }
 
-  // ── Chart defaults ───────────────────────────────────────
+  // default values for charts
   const COLORS = {
     new:       '#f5c842',
     returning: '#4a90d9',
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ── Donut chart ──────────────────────────────────────────
+  // Donut chart
   function renderDonut(canvasId, legendId, newPct, returningPct, newAbs, returningAbs) {
     const ctx = document.getElementById(canvasId).getContext('2d');
 
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Bar chart (devices) ──────────────────────────────────
+  // Bar chart (devices)
   function renderDeviceChart(labels, values, absolutes = []) {
     const barHeight = 28;
     const padding = 40;
@@ -177,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Load data ────────────────────────────────────────────
+  // load data
   async function loadOverview() {
     try {
       const [users, sessions, nvr7, nvr30, devices] = await Promise.all([
@@ -188,21 +189,21 @@ document.addEventListener('DOMContentLoaded', () => {
         apiFetch('/analytics/devices/breakdown'),
       ]);
 
-      // /analytics/users/active → { dau, mau }
+      // /analytics/users/active --> { dau, mau }
       setValue('stat-dau', formatNumber(users.dau));
       setValue('stat-mau', formatNumber(users.mau));
 
-      // /analytics/sessions/summary → { sessions_today, avg_sessions_last_7d, avg_sessions_last_30d, avg_duration_per_session }
+      // /analytics/sessions/summary --> { sessions_today, avg_sessions_last_7d, avg_sessions_last_30d, avg_duration_per_session }
       setValue('stat-sessions', formatNumber(sessions.sessions_today));
       setValue('stat-spd-7d',   sessions.avg_sessions_last_7d?.toFixed(1) ?? '—');
       setValue('stat-spd-30d',  sessions.avg_sessions_last_30d?.toFixed(1) ?? '—');
       setValue('stat-duration', formatDuration(sessions.avg_duration_per_session));
 
-      // /analytics/users/new-vs-returning?days=N → { absolute: {...}, percentage: { new_users, returning_users } }
+      // /analytics/users/new-vs-returning?days=N --> { absolute: {...}, percentage: { new_users, returning_users } }
       renderDonut('chart-nvr-7d',  'legend-nvr-7d',  nvr7.percentage.new_users,  nvr7.percentage.returning_users,  nvr7.absolute.new_users,  nvr7.absolute.returning_users);
       renderDonut('chart-nvr-30d', 'legend-nvr-30d', nvr30.percentage.new_users, nvr30.percentage.returning_users, nvr30.absolute.new_users, nvr30.absolute.returning_users);
 
-      // /analytics/devices/breakdown → { absolute: {...}, percentage: { "iPhone X": 20.0, ... } }
+      // /analytics/devices/breakdown --> { absolute: {...}, percentage: { "iPhone X": 20.0, ... } }
       const sorted = sortDescending(
         Object.keys(devices.percentage),
         Object.values(devices.percentage),
