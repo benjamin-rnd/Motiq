@@ -92,7 +92,7 @@ def get_avg_duration_per_session(db: Session) -> float:
             FROM (
                 SELECT session_id, (julianday(MAX(timestamp)) - julianday(MIN(timestamp))) * 86400 AS duration_seconds
                 FROM events
-                WHERE event_name IN ("app_launched", "app_closed")
+                WHERE event_name IN ("app_launched", "app_backgrounded")
                 GROUP BY session_id
             )
         """)
