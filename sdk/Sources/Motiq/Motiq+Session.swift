@@ -14,10 +14,10 @@ extension Motiq {
         UUID().uuidString
     }
     
-    func handleAppBackground() async {
+    func handleAppBackground() {
         cancelFlushTimer()
         
-        await internalTrack(name: "app_closed", properties: [:])
+        track("app_backgrounded", properties: [:])
         flushQueue()
     }
     
