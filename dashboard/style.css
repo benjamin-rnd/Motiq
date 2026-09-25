@@ -1,4 +1,4 @@
-/* Fonts */
+/* MARK: Fonts */
 @font-face {
   font-family: 'Inter';
   src: url('fonts/InterVariable.woff2') format('woff2');
@@ -7,7 +7,7 @@
   font-display: swap;
 }
 
-/* Tokens */
+/* MARK: Tokens */
 :root {
   --bg: #fbfbfb;
   --bg-sidebar: #fbfbfb;
@@ -35,7 +35,7 @@
   --text-secondary: #888888;
 }
 
-/* Reset */
+/* MARK: Reset */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -64,12 +64,13 @@ a {
   color: inherit;
 }
 
-/* Sidebar */
+/* MARK: Sidebar */
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   border-right: 1px solid var(--border);
   background: var(--bg-sidebar);
   display: flex;
@@ -144,7 +145,7 @@ a {
   pointer-events: none;
 }
 
-/* Icons */
+/* MARK: Icons */
 .icon {
   width: 20px;
   height: 20px;
@@ -156,6 +157,7 @@ a {
 [data-theme="dark"] .icon {
   filter: brightness(0) invert(1);
 }
+
 .icon-btn {
   background: none;
   border: none;
@@ -172,15 +174,17 @@ a {
   background: var(--active-bg);
 }
 
-/* Main wrapper */
+/* MARK: Main wrapper */
 .main-wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.2s ease;
 }
 
-/* Topbar */
+/* MARK: Topbar */
 .topbar {
   height: var(--topbar-height);
   border-bottom: 1px solid var(--border);
@@ -209,7 +213,7 @@ a {
   color: var(--text-secondary);
 }
 
-/* Content */
+/* MARK: Content */
 .content {
   padding: var(--gap);
   display: flex;
@@ -218,7 +222,7 @@ a {
   flex: 1;
 }
 
-/* Section titles */
+/* MARK: Section titles */
 .section-title {
   font-size: 12px;
   font-weight: 600;
@@ -228,7 +232,7 @@ a {
   margin-bottom: -4px;
 }
 
-/* Grid rows */
+/* MARK: Grid rows */
 .grid-row {
   display: grid;
   gap: var(--gap);
@@ -263,7 +267,7 @@ a {
   align-items: flex-start;
 }
 
-/* Cards */
+/* MARK: Cards */
 .card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -366,7 +370,7 @@ a {
   width: 100% !important;
 }
 
-/* Loading / error states */
+/* MARK: Loading / error states */
 .card-value.loading {
   opacity: 0.3;
 }

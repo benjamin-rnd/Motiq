@@ -17,9 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // MARK: Sidebar collapse
   const sidebar = document.getElementById('sidebar');
+  const mainWrapper = document.getElementById('main-wrapper');
   const sidebarToggle = document.getElementById('sidebar-toggle');
+
+  function updateMainMargin() {
+    const collapsed = sidebar.classList.contains('collapsed');
+    const width = getComputedStyle(document.documentElement)
+      .getPropertyValue(collapsed ? '--sidebar-width-collapsed' : '--sidebar-width').trim();
+    mainWrapper.style.marginLeft = width;
+  }
+
   sidebarToggle.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
+    updateMainMargin();
   });
 
   // MARK: API helpers
