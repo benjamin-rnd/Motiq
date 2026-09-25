@@ -9,30 +9,30 @@
 
 /* Tokens */
 :root {
-  --bg:               #fbfbfb;
-  --bg-sidebar:       #fbfbfb;
-  --border:           #e6e6e6;
-  --active-bg:        #e6e6e6;
-  --text-primary:     #000000;
-  --text-secondary:   #535353;
-  --accent-new:       #f5c842;
+  --bg: #fbfbfb;
+  --bg-sidebar: #fbfbfb;
+  --border: #e6e6e6;
+  --active-bg: #e6e6e6;
+  --text-primary: #000000;
+  --text-secondary: #535353;
+  --accent-new: #f5c842;
   --accent-returning: #4a90d9;
 
-  --sidebar-width:       200px;
+  --sidebar-width: 200px;
   --sidebar-width-collapsed: 56px;
-  --topbar-height:       48px;
-  --radius:              10px;
-  --gap:                 12px;
-  --font:                'Inter', system-ui, -apple-system, sans-serif;
+  --topbar-height: 48px;
+  --radius: 10px;
+  --gap: 12px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 [data-theme="dark"] {
-  --bg:               #141414;
-  --bg-sidebar:       #1a1a1a;
-  --border:           #2a2a2a;
-  --active-bg:        #2a2a2a;
-  --text-primary:     #f0f0f0;
-  --text-secondary:   #888888;
+  --bg: #141414;
+  --bg-sidebar: #1a1a1a;
+  --border: #2a2a2a;
+  --active-bg: #2a2a2a;
+  --text-primary: #f0f0f0;
+  --text-secondary: #888888;
 }
 
 /* Reset */
