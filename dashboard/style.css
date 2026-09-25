@@ -1,4 +1,4 @@
-/* ─── Fonts ─────────────────────────────────────────────── */
+/* Fonts */
 @font-face {
   font-family: 'Inter';
   src: url('fonts/InterVariable.woff2') format('woff2');
@@ -7,7 +7,7 @@
   font-display: swap;
 }
 
-/* ─── Tokens ─────────────────────────────────────────────── */
+/* Tokens */
 :root {
   --bg:               #fbfbfb;
   --bg-sidebar:       #fbfbfb;
@@ -35,7 +35,7 @@
   --text-secondary:   #888888;
 }
 
-/* ─── Reset ──────────────────────────────────────────────── */
+/* Reset */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -64,10 +64,12 @@ a {
   color: inherit;
 }
 
-/* ─── Sidebar ────────────────────────────────────────────── */
+/* Sidebar */
 .sidebar {
   width: var(--sidebar-width);
-  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   border-right: 1px solid var(--border);
   background: var(--bg-sidebar);
   display: flex;
@@ -142,7 +144,7 @@ a {
   pointer-events: none;
 }
 
-/* ─── Icons ──────────────────────────────────────────────── */
+/* Icons */
 .icon {
   width: 20px;
   height: 20px;
@@ -170,7 +172,7 @@ a {
   background: var(--active-bg);
 }
 
-/* ─── Main wrapper ───────────────────────────────────────── */
+/* Main wrapper */
 .main-wrapper {
   display: flex;
   flex-direction: column;
@@ -178,7 +180,7 @@ a {
   min-width: 0;
 }
 
-/* ─── Topbar ─────────────────────────────────────────────── */
+/* Topbar */
 .topbar {
   height: var(--topbar-height);
   border-bottom: 1px solid var(--border);
@@ -207,7 +209,7 @@ a {
   color: var(--text-secondary);
 }
 
-/* ─── Content ────────────────────────────────────────────── */
+/* Content */
 .content {
   padding: var(--gap);
   display: flex;
@@ -216,7 +218,17 @@ a {
   flex: 1;
 }
 
-/* ─── Grid rows ──────────────────────────────────────────── */
+/* Section titles */
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: -4px;
+}
+
+/* Grid rows */
 .grid-row {
   display: grid;
   gap: var(--gap);
@@ -234,7 +246,24 @@ a {
   grid-template-columns: 1fr;
 }
 
-/* ─── Cards ──────────────────────────────────────────────── */
+.grid-env {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+/* Single donut (centered, no side-by-side) */
+.donut-charts--single {
+  justify-content: flex-start;
+}
+
+.donut-charts--single .donut-wrap {
+  flex: none;
+  align-items: flex-start;
+}
+
+/* Cards */
 .card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -337,7 +366,7 @@ a {
   width: 100% !important;
 }
 
-/* ─── Loading / error states ─────────────────────────────── */
+/* Loading / error states */
 .card-value.loading {
   opacity: 0.3;
 }

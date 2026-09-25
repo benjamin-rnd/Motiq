@@ -64,7 +64,7 @@
       </div>
       <div class="topbar-right">
         <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">
-          <img src="icons/dark_mode.svg" alt="Toggle dark mode" class="icon" id="theme-icon" />
+          <img src="icons/dark_mode.svg" alt="Toggle dark mode" class="icon" />
         </button>
         <button class="icon-btn" title="Settings">
           <img src="icons/settings.svg" alt="Settings" class="icon" />
@@ -76,6 +76,8 @@
     <main class="content" id="content">
 
       <!-- Grid: KPI cards + New vs Returning + Session stats -->
+      <h2 class="section-title">Usage</h2>
+
       <div class="grid-main">
 
         <div class="card card--stat">
@@ -131,15 +133,71 @@
       </div>
 
       <!-- Row 3: Device Models -->
-      <div class="grid-row grid-row--bottom">
+      <h2 class="section-title">Devices &amp; Environment</h2>
 
+      <!-- Device Models -->
+      <div class="grid-row grid-row--bottom">
         <div class="card card--chart">
           <span class="card-label">Device Models</span>
           <div class="chart-wrap">
             <canvas id="chart-devices"></canvas>
           </div>
         </div>
+      </div>
 
+      <!-- Environment donuts: OS, Color Scheme, Orientation, Connectivity -->
+      <div class="grid-env">
+
+        <div class="card card--donut">
+          <span class="card-label">OS Version</span>
+          <div class="donut-charts donut-charts--single">
+            <div class="donut-wrap">
+              <canvas id="chart-os"></canvas>
+              <div class="donut-legend" id="legend-os"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--donut">
+          <span class="card-label">Color Scheme</span>
+          <div class="donut-charts donut-charts--single">
+            <div class="donut-wrap">
+              <canvas id="chart-color-scheme"></canvas>
+              <div class="donut-legend" id="legend-color-scheme"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--donut">
+          <span class="card-label">Orientation</span>
+          <div class="donut-charts donut-charts--single">
+            <div class="donut-wrap">
+              <canvas id="chart-orientation"></canvas>
+              <div class="donut-legend" id="legend-orientation"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--donut">
+          <span class="card-label">Connectivity</span>
+          <div class="donut-charts donut-charts--single">
+            <div class="donut-wrap">
+              <canvas id="chart-connectivity"></canvas>
+              <div class="donut-legend" id="legend-connectivity"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Accessibility Features -->
+      <div class="grid-row grid-row--bottom">
+        <div class="card card--chart">
+          <span class="card-label">Accessibility Features</span>
+          <div class="chart-wrap">
+            <canvas id="chart-accessibility"></canvas>
+          </div>
+        </div>
       </div>
 
     </main>
