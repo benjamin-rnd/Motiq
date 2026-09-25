@@ -85,16 +85,24 @@ def get_new_vs_returning_users(db: Session, number_of_days: int) -> dict[str, di
     return {"absolute": absolute,
             "percentage": percentages}
 
-def get_avg_duration_per_session(db: Session) -> float:
+def get_avg_duration_per_session(db: Session, number_of_days: int) -> float:
     return db.execute(
-        text("""
+        text(f"""
             SELECT round(avg(duration_seconds), 1) AS avg_duration_seconds
             FROM (
-                SELECT session_id, (julianday(MAX(timestamp)) - julianday(MIN(timestamp))) * 86400 AS duration_seconds
+                SELECT
+                    session_id,
+                    (julianday(MAX(CASE WHEN event_name = "app_backgrounded" THEN timestamp END)) -
+                     julianday(MIN(CASE WHEN event_name = "app_launched" THEN timestamp END))) * 86400 AS duration_seconds
                 FROM events
                 WHERE event_name IN ("app_launched", "app_backgrounded")
+                AND timestamp >= datetime('now', '-{number_of_days} days')
                 GROUP BY session_id
+                HAVING
+                    MIN(CASE WHEN event_name = "app_launched" THEN timestamp END) IS NOT NULL AND
+                    MAX(CASE WHEN event_name = "app_backgrounded" THEN timestamp END) IS NOT NULL
             )
+            WHERE duration_seconds > 0;
         """)
     ).scalar() or 0.0
 
@@ -103,7 +111,7 @@ def get_avg_sessions(db: Session, number_of_days: int) -> float:
         text(f"""
             SELECT round(count(DISTINCT session_id) / {number_of_days}.0, 1)
             FROM events
-            WHERE timestamp >= datetime("now", "-{number_of_days} days")
+            WHERE timestamp >= datetime('now', '-{number_of_days} days')
         """)
     ).scalar() or 0.0
 
@@ -112,7 +120,7 @@ def get_sessions_today(db: Session) -> int:
         text("""
             SELECT count(DISTINCT session_id)
             FROM events
-            WHERE date(timestamp) = date("now")
+            WHERE date(timestamp) = date('now')
         """)
     ).scalar() or 0
 

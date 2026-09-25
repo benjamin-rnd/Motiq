@@ -150,7 +150,7 @@ def test_get_session_summary(client: TestClient):
 
     assert response.status_code == 200
     assert response.json() == { "sessions_today": 9, "avg_sessions_last_7d": 2.3,
-        "avg_sessions_last_30d": 1.0, "avg_duration_per_session": 0.0 }
+        "avg_sessions_last_30d": 1.0, "avg_duration_per_session_30d": 412.3 }
 
 def test_get_device_breakdown(client: TestClient):
     response = client.get("/analytics/devices/breakdown", headers={"X-API-Key": key})

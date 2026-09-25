@@ -62,7 +62,7 @@ def get_session_summary(db: Session = Depends(get_readonly_db), key: str = Depen
         "sessions_today": crud.get_sessions_today(db),
         "avg_sessions_last_7d": crud.get_avg_sessions(db, 7),
         "avg_sessions_last_30d": crud.get_avg_sessions(db, 30),
-        "avg_duration_per_session": crud.get_avg_duration_per_session(db)
+        "avg_duration_per_session_30d": crud.get_avg_duration_per_session(db, 30)
     }
 
 @app.get("/analytics/devices/breakdown", status_code=status.HTTP_200_OK)

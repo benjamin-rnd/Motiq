@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setValue('stat-sessions', formatNumber(sessions.sessions_today));
       setValue('stat-spd-7d',   sessions.avg_sessions_last_7d?.toFixed(1) ?? '—');
       setValue('stat-spd-30d',  sessions.avg_sessions_last_30d?.toFixed(1) ?? '—');
-      setValue('stat-duration', formatDuration(sessions.avg_duration_per_session));
+      setValue('stat-duration', formatDuration(sessions.avg_duration_per_session_30d));
 
       // /analytics/users/new-vs-returning?days=N --> { absolute: {...}, percentage: { new_users, returning_users } }
       renderDonut('chart-nvr-7d',  'legend-nvr-7d',  nvr7.percentage.new_users,  nvr7.percentage.returning_users,  nvr7.absolute.new_users,  nvr7.absolute.returning_users);
